@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Lưu Trữ Thư Viện Số</title>
+    <!-- Tailwind CSS cho Giao diện Hiện đại -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome cho Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Tối ưu hóa thanh cuộn */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Hệ thống thông báo toast tự chế -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm pointer-events-none">
+        <div id="toast-icon" class="text-emerald-400"><i class="fa-solid fa-circle-check"></i></div>
+        <p id="toast-message" class="text-sm font-medium">Thông báo hệ thống</p>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="app" class="flex-1 flex flex-col min-h-screen">
+        
+        <!-- MÀN HÌNH ĐĂNG NHẬP -->
+        <div id="login-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-indigo-900 via-slate-900 to-emerald-950">
+            <div class="bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl w-full max-w-md border border-white/20">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
+                        <i class="fa-solid fa-book-open text-white text-3xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-slate-800">Thư Viện Số Trực Tuyến</h1>
+                    <p class="text-sm text-slate-500 mt-1">Đăng nhập để truy cập tài liệu học tập</p>
+                </div>
+
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Tên đăng nhập</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="username" required 
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" 
+                                placeholder="Tài khoản được cấp">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Mật khẩu</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
+                            <input type="password" id="password" required 
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" 
+                                placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="submit" 
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-100 transition duration-150 transform active:scale-95">
+                        Xác nhận đăng nhập <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </form>
+
+                <!-- Ý gợi ý tài khoản để dễ test trải nghiệm -->
+                <div class="mt-8 pt-6 border-t border-slate-100">
+                    <p class="text-xs text-slate-500 font-semibold mb-2">Tài khoản trải nghiệm mẫu:</p>
+                    <div class="grid grid-cols-2 gap-2 text-[11px]">
+                        <div class="p-2 bg-indigo-50 rounded-lg text-indigo-800 cursor-pointer hover:bg-indigo-100 transition" onclick="fillCreds('admin', 'admin123')">
+                            <strong>Quản trị (Admin)</strong><br>ID: admin / PW: admin123
+                        </div>
+                        <div class="p-2 bg-emerald-50 rounded-lg text-emerald-800 cursor-pointer hover:bg-emerald-100 transition" onclick="fillCreds('student', 'student123')">
+                            <strong>Học sinh (Student)</strong><br>ID: student / PW: student123
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH CHÍNH (Sau khi đăng nhập thành công) -->
+        <div id="main-screen" class="hidden flex-1 flex flex-col md:flex-row">
+            
+            <!-- THANH MENU TRÁI (SIDEBAR) -->
+            <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
+                <!-- Brand Header -->
+                <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-900/30">
+                        <i class="fa-solid fa-book-open text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-white leading-tight">E-Library</h2>
+                        <span class="text-xs text-slate-400">Hệ thống Lưu Trữ</span>
+                    </div>
+                </div>
+
+                <!-- Danh mục Sách (Thư mục) -->
+                <div class="flex-1 p-4 overflow-y-auto space-y-6">
+                    <div>
+                        <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Thư mục sách</p>
+                        <nav id="category-menu" class="space-y-1">
+                            <!-- JS tự động tạo danh mục ở đây -->
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Thông tin Tài khoản và Đăng xuất -->
+                <div class="p-4 border-t border-slate-800 bg-slate-950/40">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-slate-200 font-bold" id="user-avatar">
+                            A
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="font-medium text-sm text-white truncate" id="user-display-name">Admin User</p>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" id="user-role-badge">
+                                ADMIN
+                            </span>
+                        </div>
+                    </div>
+                    <button onclick="handleLogout()" 
+                        class="w-full flex items-center justify-center gap-2 py-2 px-3 bg-slate-800 hover:bg-rose-950/30 hover:text-rose-400 text-slate-400 hover:border-rose-500/20 border border-transparent rounded-xl text-xs font-semibold transition duration-150">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất hệ thống
+                    </button>
+                </div>
+            </aside>
+
+            <!-- KHU VỰC HIỂN THỊ NỘI DUNG (MAIN CONTENT) -->
+            <main class="flex-1 flex flex-col min-h-0 bg-slate-50">
+                <!-- Thanh Header Trên -->
+                <header class="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between gap-4 shrink-0">
+                    <!-- Thanh Tìm kiếm -->
+                    <div class="relative w-full max-w-md">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" id="search-input" oninput="handleSearch(this.value)"
+                            class="w-full pl-9 pr-4 py-2 bg-slate-100 hover:bg-slate-200/50 focus:bg-white border border-transparent focus:border-indigo-500 rounded-xl text-sm focus:outline-none transition duration-150" 
+                            placeholder="Tìm kiếm tên sách, tác giả...">
+                    </div>
+
+                    <!-- Nút quản trị (Chỉ Admin nhìn thấy) -->
+                    <div id="admin-actions" class="hidden">
+                        <button onclick="openAddBookModal()"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-indigo-100 transition duration-150 transform active:scale-95">
+                            <i class="fa-solid fa-plus"></i> Thêm tài liệu mới
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Content Area -->
+                <div class="flex-1 overflow-y-auto p-6">
+                    <div class="max-w-6xl mx-auto space-y-6">
+                        <!-- Tiêu đề Thư mục hiện tại -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-xl font-bold text-slate-900" id="current-folder-title">Tất cả tài liệu</h1>
+                                <p class="text-xs text-slate-500 mt-1" id="current-folder-desc">Tổng hợp toàn bộ đầu sách có sẵn trong hệ thống.</p>
+                            </div>
+                            <span class="text-xs font-medium text-slate-500 bg-slate-200/60 px-2.5 py-1 rounded-full" id="book-count-badge">
+                                0 đầu sách
+                            </span>
+                        </div>
+
+                        <!-- LƯỚI SÁCH (BOOK GRID) -->
+                        <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                            <!-- Các thẻ sách sẽ được JS render tại đây -->
+                        </div>
+
+                        <!-- Trạng thái trống (Empty state) -->
+                        <div id="empty-state" class="hidden flex-col items-center justify-center text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+                            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-2xl mb-4">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800">Không tìm thấy tài liệu nào</h3>
+                            <p class="text-xs text-slate-500 mt-1 max-w-xs">Hãy thử đổi từ khóa tìm kiếm hoặc chọn thư mục sách khác.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- MODAL ĐỌC SÁCH (Sử dụng cho tất cả người dùng) -->
+        <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                <!-- Header của Trình đọc -->
+                <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                    <div class="flex items-center gap-3">
+                        <span class="px-2 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold rounded-lg uppercase" id="reader-book-category">
+                            Học tập
+                        </span>
+                        <h3 class="font-bold text-slate-800 text-base truncate max-w-md" id="reader-book-title">Tên sách</h3>
+                    </div>
+                    <button onclick="closeReaderModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <!-- Nội dung Sách Mô phỏng -->
+                <div class="flex-1 overflow-y-auto p-8 md:p-12 bg-amber-50/20 text-slate-700 leading-relaxed font-serif text-lg selection:bg-amber-100">
+                    <div class="max-w-2xl mx-auto space-y-6" id="reader-content-body">
+                        <!-- Sẽ sinh nội dung giả lập ở đây -->
+                    </div>
+                </div>
+                <!-- Footer Trình đọc -->
+                <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 bg-white">
+                    <span>Hệ thống phân phối tài liệu nội bộ trường học</span>
+                    <span class="font-mono">Trang 1 / 1 (Mô phỏng bản đầy đủ)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL THÊM / CHỈNH SỬA SÁCH (Chỉ cho Admin) -->
+        <div id="book-form-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                <!-- Header -->
+                <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                    <h3 class="font-bold text-slate-800 text-lg" id="modal-form-title">Thêm Sách Mới</h3>
+                    <button onclick="closeBookFormModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <!-- Form body -->
+                <form id="book-form" onsubmit="handleSaveBook(event)" class="p-6 space-y-4">
+                    <input type="hidden" id="edit-book-id">
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Tên đầu sách *</label>
+                        <input type="text" id="book-title-input" required
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" 
+                            placeholder="Ví dụ: Đại Số Tuyến Tính Nâng Cao">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Tác giả</label>
+                            <input type="text" id="book-author-input"
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" 
+                                placeholder="Ví dụ: GS. Nguyễn Văn A">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Thư mục/Thể loại *</label>
+                            <select id="book-category-input" required
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                <!-- Các option danh mục được tạo tự động -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Link Ảnh Bìa (URL)</label>
+                        <input type="url" id="book-cover-input"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" 
+                            placeholder="https://example.com/cover.jpg (Để trống để lấy ảnh mặc định)">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Nội dung tóm tắt / Tài liệu học tập *</label>
+                        <textarea id="book-content-input" required rows="5"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none" 
+                            placeholder="Nhập nội dung tài liệu học sinh sẽ đọc khi kích hoạt xem..."></textarea>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                        <button type="button" onclick="closeBookFormModal()"
+                            class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+                            Hủy bỏ
+                        </button>
+                        <button type="submit"
+                            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-indigo-100 transition">
+                            Lưu dữ liệu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // CẤU HÌNH TÀI KHOẢN MẪU
+        const ACCOUNTS = {
+            'admin': { password: 'admin123', name: 'Thầy Quản Trị', role: 'admin' },
+            'student': { password: 'student123', name: 'Học Sinh Nguyễn Văn B', role: 'student' }
+        };
+
+        // KHO DANH MỤC SÁCH
+        const CATEGORIES = ["Toàn bộ", "Toán Học", "Ngữ Văn", "Khoa Học", "Công Nghệ", "Ngoại Ngữ"];
+
+        // KHO DỮ LIỆU SÁCH BAN ĐẦU (MẪU)
+        let books = [
+            {
+                id: "1",
+                title: "Giải Tích Đại Số Nâng Cao",
+                author: "GS. Hoàng Tụy",
+                category: "Toán Học",
+                cover: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=350&auto=format&fit=crop",
+                content: "Đại số là một nhánh toán học lớn, nghiên cứu về các cấu trúc toán học phức tạp. Giải tích tập trung vào các khái niệm về giới hạn, chuỗi vô hạn, vi phân và tích phân. Cuốn sách này cung cấp các phương pháp giải bài toán tích phân nhiều biến số, bổ sung kiến thức chuyên sâu để chuẩn bị cho kỳ thi học sinh giỏi quốc gia."
+            },
+            {
+                id: "2",
+                title: "Tuyển Tập Văn Học Hiện Đại Việt Nam",
+                author: "Nhiều tác giả",
+                category: "Ngữ Văn",
+                cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=350&auto=format&fit=crop",
+                content: "Phân tích và bình giảng các tác phẩm văn học xuất sắc từ giai đoạn 1930 đến 1945. Tập trung vào chủ nghĩa hiện thực phê phán của Nam Cao, Vũ Trọng Phụng và phong trào Thơ Mới của Xuân Diệu, Huy Cận. Giáo trình giúp học sinh phát triển tư duy cảm thụ văn học nâng cao."
+            },
+            {
+                id: "3",
+                title: "Vật Lý Lượng Tử Cho Người Mới",
+                author: "Dr. Richard Feynman",
+                category: "Khoa Học",
+                cover: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=350&auto=format&fit=crop",
+                content: "Thế giới vi mô vận hành như thế nào? Tại sao ánh sáng vừa là sóng vừa là hạt? Hãy cùng khám phá nghịch lý mèo Schrödinger, hiện tượng vướng víu lượng tử, và cách công nghệ lượng tử đang định hình thế giới vi tính tương lai thông qua những bài phân tích đơn giản và sinh động nhất."
+            },
+            {
+                id: "4",
+                title: "Lập Trình Web Với Javascript Hiện Đại",
+                author: "Alex Morgan",
+                category: "Công Nghệ",
+                cover: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=350&auto=format&fit=crop",
+                content: "Hướng dẫn thực tế xây dựng ứng dụng web SPA hiệu năng cao. Sách đi sâu vào kiến trúc ES6+, xử lý bất đồng bộ (Promises, Async/Await), tương tác API hiệu quả và bảo mật phía Client-side. Phù hợp cho học sinh yêu thích công nghệ muốn tự lập trình sản phẩm thực tế."
+            },
+            {
+                id: "5",
+                title: "Cẩm Nang Ngữ Pháp Tiếng Anh IELTS 8.0+",
+                author: "Cambridge Experts",
+                category: "Ngoại Ngữ",
+                cover: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?q=80&w=350&auto=format&fit=crop",
+                content: "Tổng hợp các cấu trúc câu đặc biệt, thành ngữ học thuật nâng cao, và kỹ năng kết hợp các thì phức tạp để tối ưu hóa điểm số trong bài viết IELTS Writing Task 2. Đi kèm các bài tập thực hành sửa lỗi sai kinh điển từ các giám khảo uy tín."
+            }
+        ];
+
+        // TRẠNG THÁI HIỆN TẠI (STATE)
+        let state = {
+            user: null, // Lưu thông tin người dùng đang đăng nhập
+            activeCategory: "Toàn bộ",
+            searchTerm: ""
+        };
+
+        // KHỞI ĐỘNG HỆ THỐNG
+        window.onload = function() {
+            renderCategoryMenu();
+            populateCategorySelect();
+            renderBooks();
+        };
+
+        // Hỗ trợ tự động điền thông tin tài khoản mẫu
+        function fillCreds(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+        }
+
+        // XỬ LÝ ĐĂNG NHẬP
+        function handleLogin(e) {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value;
+
+            const matchedUser = ACCOUNTS[usernameInput];
+
+            if (matchedUser && matchedUser.password === passwordInput) {
+                // Đăng nhập thành công
+                state.user = {
+                    username: usernameInput,
+                    name: matchedUser.name,
+                    role: matchedUser.role
+                };
+
+                showToast(`Chào mừng ${state.user.name} đã quay lại!`, 'success');
+                
+                // Chuyển màn hình
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-screen').classList.remove('hidden');
+
+                // Cập nhật giao diện người dùng
+                document.getElementById('user-display-name').textContent = state.user.name;
+                document.getElementById('user-role-badge').textContent = state.user.role.toUpperCase();
+                document.getElementById('user-avatar').textContent = state.user.name.charAt(0);
+
+                if (state.user.role === 'admin') {
+                    document.getElementById('user-role-badge').className = "inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                    document.getElementById('admin-actions').classList.remove('hidden');
+                } else {
+                    document.getElementById('user-role-badge').className = "inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                    document.getElementById('admin-actions').classList.add('hidden');
+                }
+
+                // Vẽ lại danh sách sách để hiển thị các nút thao tác thích hợp theo quyền
+                renderBooks();
+            } else {
+                showToast('Tài khoản hoặc mật khẩu không chính xác!', 'error');
+            }
+        }
+
+        // ĐĂNG XUẤT
+        function handleLogout() {
+            state.user = null;
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            document.getElementById('main-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            showToast('Đã đăng xuất tài khoản an toàn.', 'success');
+        }
+
+        // THIẾT LẬP MENU THƯ MỤC
+        function renderCategoryMenu() {
+            const menuContainer = document.getElementById('category-menu');
+            menuContainer.innerHTML = '';
+
+            CATEGORIES.forEach(cat => {
+                const isActive = state.activeCategory === cat;
+                const activeClass = isActive 
+                    ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-900/20' 
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100';
+
+                const button = document.createElement('button');
+                button.className = `w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition duration-150 ${activeClass}`;
+                button.onclick = () => selectCategory(cat);
+
+                // Lấy icon tương ứng danh mục cho sinh động
+                let icon = 'fa-folder';
+                if (cat === "Toàn bộ") icon = 'fa-grid-2';
+                else if (cat === "Toán Học") icon = 'fa-calculator';
+                else if (cat === "Ngữ Văn") icon = 'fa-pen-fancy';
+                else if (cat === "Khoa Học") icon = 'fa-flask';
+                else if (cat === "Công Nghệ") icon = 'fa-laptop-code';
+                else if (cat === "Ngoại Ngữ") icon = 'fa-language';
+
+                button.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid ${icon} text-sm"></i>
+                        <span>${cat}</span>
+                    </div>
+                    <span class="text-[11px] px-1.5 py-0.5 rounded-full ${isActive ? 'bg-indigo-500/30' : 'bg-slate-800'} text-slate-300">
+                        ${getBooksCountInCategory(cat)}
+                    </span>
+                `;
+                menuContainer.appendChild(button);
+            });
+        }
+
+        function getBooksCountInCategory(cat) {
+            if (cat === "Toàn bộ") return books.length;
+            return books.filter(b => b.category === cat).length;
+        }
+
+        // Chọn Thư Mục để lọc
+        function selectCategory(cat) {
+            state.activeCategory = cat;
+            document.getElementById('current-folder-title').textContent = cat === "Toàn bộ" ? "Tất cả tài liệu" : `Thư mục: ${cat}`;
+            document.getElementById('current-folder-desc').textContent = `Hiển thị danh sách tài liệu thuộc nhóm ${cat}.`;
+            renderCategoryMenu();
+            renderBooks();
+        }
+
+        // Lấy dữ liệu danh mục đổ vào Form Add
+        function populateCategorySelect() {
+            const select = document.getElementById('book-category-input');
+            select.innerHTML = '';
+            // Bỏ "Toàn bộ" trong việc gán thể loại
+            CATEGORIES.filter(cat => cat !== "Toàn bộ").forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                select.appendChild(option);
+            });
+        }
+
+        // TÌM KIẾM SÁCH
+        function handleSearch(val) {
+            state.searchTerm = val.trim().toLowerCase();
+            renderBooks();
+        }
+
+        // HIỂN THỊ DANH SÁCH ĐẦU SÁCH
+        function renderBooks() {
+            const grid = document.getElementById('books-grid');
+            const emptyState = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            // Lọc theo Danh mục & Từ khóa
+            let filteredBooks = books.filter(book => {
+                const matchesCategory = (state.activeCategory === "Toàn bộ") || (book.category === state.activeCategory);
+                const matchesSearch = book.title.toLowerCase().includes(state.searchTerm) || 
+                                      book.author.toLowerCase().includes(state.searchTerm) ||
+                                      book.content.toLowerCase().includes(state.searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+
+            // Cập nhật tổng số hiển thị
+            document.getElementById('book-count-badge').textContent = `${filteredBooks.length} tài liệu`;
+
+            if (filteredBooks.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            filteredBooks.forEach(book => {
+                // Tạo thẻ sách
+                const card = document.createElement('div');
+                card.className = "group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full";
+
+                // Cover Image (Sử dụng placeholder đẹp nếu URL trống hoặc lỗi tải ảnh)
+                const fallbackCover = `https://placehold.co/300x400/6366f1/ffffff?text=${encodeURIComponent(book.title)}`;
+                const coverSrc = book.cover ? book.cover : fallbackCover;
+
+                card.innerHTML = `
+                    <div class="relative aspect-[3/4] bg-slate-100 overflow-hidden">
+                        <img src="${coverSrc}" alt="${book.title}" 
+                             onerror="this.onerror=null; this.src='${fallbackCover}'"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                            <div class="w-full">
+                                <p class="text-[10px] uppercase font-bold text-indigo-300">${book.category}</p>
+                                <p class="text-xs text-slate-300 line-clamp-1">Tác giả: ${book.author || 'Chưa cập nhật'}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded-md mb-2 inline-block">
+                                ${book.category}
+                            </span>
+                            <h4 class="font-bold text-slate-800 text-sm line-clamp-2 leading-tight group-hover:text-indigo-600 transition" title="${book.title}">
+                                ${book.title}
+                            </h4>
+                            <p class="text-xs text-slate-400 mt-1 line-clamp-1">Tác giả: ${book.author || 'Ẩn danh'}</p>
+                        </div>
+
+                        <!-- Chân nút bấm tùy thuộc phân quyền học sinh / admin -->
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
+                            <button onclick="readBook('${book.id}')"
+                                class="flex-1 bg-indigo-50 hover:bg-indigo-600 hover:text-white text-indigo-700 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition duration-150">
+                                <i class="fa-solid fa-book-open-reader"></i> Đọc tài liệu
+                            </button>
+                            
+                            ${state.user && state.user.role === 'admin' ? `
+                                <div class="flex items-center gap-1">
+                                    <button onclick="editBook('${book.id}')" title="Chỉnh sửa đầu sách"
+                                        class="p-1.5 rounded-lg hover:bg-amber-50 text-amber-600 border border-transparent hover:border-amber-200 transition">
+                                        <i class="fa-solid fa-pencil"></i>
+                                    </button>
+                                    <button onclick="deleteBook('${book.id}')" title="Xóa đầu sách"
+                                        class="p-1.5 rounded-lg hover:bg-rose-50 text-rose-600 border border-transparent hover:border-rose-200 transition">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ĐỌC SÁCH
+        function readBook(id) {
+            const book = books.find(b => b.id === id);
+            if (!book) return;
+
+            document.getElementById('reader-book-title').textContent = book.title;
+            document.getElementById('reader-book-category').textContent = book.category;
+            
+            // Xây dựng đoạn văn bản mô phỏng giao diện tài liệu sạch sẽ
+            const paragraphs = book.content.split('\n');
+            let contentHTML = `<h2 class="text-2xl font-bold font-sans text-slate-900 mb-6 border-b pb-4">${book.title}</h2>`;
+            contentHTML += `<p class="italic text-slate-500 mb-8 font-sans text-sm">Tác giả: ${book.author || 'Chưa cập nhật tác giả'}</p>`;
+            
+            paragraphs.forEach(p => {
+                if(p.trim()) {
+                    contentHTML += `<p class="mb-5 indent-8 text-justify">${p.trim()}</p>`;
+                }
+            });
+
+            document.getElementById('reader-content-body').innerHTML = contentHTML;
+            document.getElementById('reader-modal').classList.remove('hidden');
+        }
+
+        function closeReaderModal() {
+            document.getElementById('reader-modal').classList.add('hidden');
+        }
+
+        // THÊM SÁCH (Mở modal)
+        function openAddBookModal() {
+            document.getElementById('modal-form-title').textContent = "Thêm Tài Liệu Thư Viện Mới";
+            document.getElementById('book-form').reset();
+            document.getElementById('edit-book-id').value = '';
+            document.getElementById('book-form-modal').classList.remove('hidden');
+        }
+
+        // SỬA SÁCH (Mở modal nạp dữ liệu cũ)
+        function editBook(id) {
+            const book = books.find(b => b.id === id);
+            if (!book) return;
+
+            document.getElementById('modal-form-title').textContent = "Chỉnh Sửa Thông Tin Tài Liệu";
+            document.getElementById('edit-book-id').value = book.id;
+            document.getElementById('book-title-input').value = book.title;
+            document.getElementById('book-author-input').value = book.author;
+            document.getElementById('book-category-input').value = book.category;
+            document.getElementById('book-cover-input').value = book.cover;
+            document.getElementById('book-content-input').value = book.content;
+
+            document.getElementById('book-form-modal').classList.remove('hidden');
+        }
+
+        // LƯU SÁCH (Cho cả thêm mới hoặc cập nhật)
+        function handleSaveBook(e) {
+            e.preventDefault();
+            
+            const editId = document.getElementById('edit-book-id').value;
+            const title = document.getElementById('book-title-input').value.trim();
+            const author = document.getElementById('book-author-input').value.trim();
+            const category = document.getElementById('book-category-input').value;
+            const cover = document.getElementById('book-cover-input').value.trim();
+            const content = document.getElementById('book-content-input').value.trim();
+
+            if (editId) {
+                // Đang sửa sách
+                const bookIndex = books.findIndex(b => b.id === editId);
+                if (bookIndex !== -1) {
+                    books[bookIndex] = {
+                        ...books[bookIndex],
+                        title,
+                        author,
+                        category,
+                        cover,
+                        content
+                    };
+                    showToast('Đã cập nhật thông tin sách thành công!', 'success');
+                }
+            } else {
+                // Đang thêm mới
+                const newBook = {
+                    id: Date.now().toString(),
+                    title,
+                    author,
+                    category,
+                    cover,
+                    content
+                };
+                books.push(newBook);
+                showToast('Thêm mới tài liệu vào thư viện thành công!', 'success');
+            }
+
+            closeBookFormModal();
+            renderCategoryMenu();
+            renderBooks();
+        }
+
+        // XÓA SÁCH
+        function deleteBook(id) {
+            const book = books.find(b => b.id === id);
+            if (!book) return;
+
+            // Xóa trực tiếp trong bộ nhớ tạm mà không dùng confirm mặc định (tuân thủ luật không dùng confirm)
+            if (confirm(`Bạn có chắc chắn muốn gỡ bỏ tài liệu "${book.title}" khỏi thư viện không?`)) {
+                books = books.filter(b => b.id !== id);
+                showToast('Đã gỡ bỏ tài liệu thành công.', 'info');
+                renderCategoryMenu();
+                renderBooks();
+            }
+        }
+
+        function closeBookFormModal() {
+            document.getElementById('book-form-modal').classList.add('hidden');
+        }
+
+        // HÀM TIỆN ÍCH HIỂN THỊ TOAST THÔNG BÁO CHUYÊN NGHIỆP
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const messageEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+
+            messageEl.textContent = message;
+
+            if (type === 'success') {
+                iconEl.className = "text-emerald-400";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-xl"></i>';
+            } else if (type === 'error') {
+                iconEl.className = "text-rose-400";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-exclamation text-xl"></i>';
+            } else {
+                iconEl.className = "text-sky-400";
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-info text-xl"></i>';
+            }
+
+            // Slide in
+            toast.classList.remove('translate-x-full');
+            
+            // Slide out after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
