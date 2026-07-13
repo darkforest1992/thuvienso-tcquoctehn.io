@@ -174,7 +174,11 @@
                     </div>
 
                     <!-- Nút quản trị (Chỉ Admin nhìn thấy) -->
-                    <div id="admin-actions" class="hidden">
+                    <div id="admin-actions" class="hidden flex items-center gap-2">
+                        <button onclick="openUserMgmtModal()"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-emerald-100 transition duration-150 transform active:scale-95">
+                            <i class="fa-solid fa-users-gear"></i> Quản lý thành viên
+                        </button>
                         <button onclick="openAddBookModal()"
                             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-indigo-100 transition duration-150 transform active:scale-95">
                             <i class="fa-solid fa-plus"></i> Thêm tài liệu mới
@@ -384,6 +388,72 @@
             </div>
         </div>
 
+        <!-- MODAL QUẢN LÝ THÀNH VIÊN (Chỉ cho Admin) -->
+        <div id="user-mgmt-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                <!-- Header -->
+                <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+                    <h3 class="font-bold text-slate-800 text-lg">Quản Lý Thành Viên Thư Viện</h3>
+                    <button onclick="closeUserMgmtModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <!-- Body -->
+                <div class="p-6 flex-1 overflow-y-auto space-y-6">
+                    <!-- Form thêm/sửa thành viên -->
+                    <form id="user-form" onsubmit="handleSaveUser(event)" class="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/60">
+                        <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cấp tài khoản mới / Chỉnh sửa</p>
+                        <input type="hidden" id="edit-user-id">
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Họ và tên học sinh *</label>
+                                <input type="text" id="user-fullname-input" required
+                                    class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition" 
+                                    placeholder="Ví dụ: Nguyễn Văn C">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Quyền truy cập *</label>
+                                <select id="user-role-input" required
+                                    class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition">
+                                    <option value="student">Học Sinh (Student)</option>
+                                    <option value="admin">Quản Trị Viên (Admin)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Tên đăng nhập *</label>
+                                <input type="text" id="user-username-input" required
+                                    class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition" 
+                                    placeholder="Tên viết liền không dấu">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Mật khẩu *</label>
+                                <input type="text" id="user-password-input" required
+                                    class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition" 
+                                    placeholder="Nhập mật khẩu được cấp">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-2 pt-2">
+                            <button type="button" onclick="resetUserForm()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition">Hủy nhập</button>
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition">Lưu thông tin</button>
+                        </div>
+                    </form>
+
+                    <!-- Danh sách người dùng hiện tại -->
+                    <div class="pt-4 border-t border-slate-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Danh sách tài khoản trên Cloud</p>
+                        <div id="modal-user-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                            <!-- Danh sách render động ở đây -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Nhúng Firebase 11.6.1 SDK trực tiếp -->
@@ -395,12 +465,12 @@
         // Lấy cấu hình Firebase và App ID tự động từ hệ thống
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'shared-library-id-2026';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-          apiKey: "AIzaSyC-lX9wNaPpR_Zo5XvNw_V_IneP0MeLuiQ",
-          authDomain: "e-library-system-6da20.firebaseapp.com",
-          projectId: "e-library-system-6da20",
-          storageBucket: "e-library-system-6da20.firebasestorage.app",
-          messagingSenderId: "35908896006",
-          appId: "1:35908896006:web:d70f88575b8918b5eb8a87"
+                      apiKey: "AIzaSyC-lX9wNaPpR_Zo5XvNw_V_IneP0MeLuiQ",
+                      authDomain: "e-library-system-6da20.firebaseapp.com",
+                      projectId: "e-library-system-6da20",
+                      storageBucket: "e-library-system-6da20.firebasestorage.app",
+                      messagingSenderId: "35908896006",
+                      appId: "1:35908896006:web:d70f88575b8918b5eb8a87"
         };
 
         // Khởi tạo các dịch vụ Firebase
@@ -441,6 +511,7 @@
             user: null, 
             categories: [],
             books: [],
+            users: [], // Thêm để quản lý tài khoản thành viên học sinh/admin
             activeCategory: "Toàn bộ",
             searchTerm: "",
             uploadedFile: null // Lưu trữ tệp tin tạm thời khi upload { name, size, type, base64 }
@@ -449,6 +520,7 @@
         // TIẾP CẬN FIRESTORE THEO PATH QUY ĐỊNH (RULE 1)
         const categoriesRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
         const booksRef = collection(db, 'artifacts', appId, 'public', 'data', 'books');
+        const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
 
         // BẢO MẬT & ĐĂNG NHẬP TRƯỚC KHI TRUY VẤN (RULE 3)
         async function authenticateDatabase() {
@@ -487,6 +559,14 @@
         window.handleSaveCategory = handleSaveCategory;
         window.deleteCategory = deleteCategory;
         window.handleSearch = handleSearch;
+
+        // Các hàm toàn cục mới hỗ trợ Quản lý thành viên
+        window.openUserMgmtModal = openUserMgmtModal;
+        window.closeUserMgmtModal = closeUserMgmtModal;
+        window.resetUserForm = resetUserForm;
+        window.handleSaveUser = handleSaveUser;
+        window.editUser = editUser;
+        window.deleteUser = deleteUser;
 
         // KHỞI ĐỘNG HỆ THỐNG KHI LOAD TRANG
         window.addEventListener('load', () => {
@@ -529,6 +609,25 @@
             }, (error) => {
                 console.error("Books snapshot error:", error);
             });
+
+            // Lắng nghe danh sách Thành viên học sinh/admin
+            onSnapshot(usersRef, (snapshot) => {
+                const fetchedUsers = [];
+                snapshot.forEach(doc => {
+                    fetchedUsers.push({ id: doc.id, ...doc.data() });
+                });
+                state.users = fetchedUsers;
+
+                // Gieo người dùng mặc định nếu danh sách trống
+                if (state.users.length === 0) {
+                    seedDefaultUsers();
+                    return;
+                }
+
+                renderUserList();
+            }, (error) => {
+                console.error("Users snapshot error:", error);
+            });
         }
 
         // TỰ ĐỘNG KHỞI TẠO DỮ LIỆU MẪU KHI DB RỖNG
@@ -539,6 +638,18 @@
             }
             for (let book of DEFAULT_BOOKS) {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', book.id), book);
+            }
+        }
+
+        // TỰ ĐỘNG KHỞI TẠO TÀI KHOẢN MẪU LÊN CLOUD
+        async function seedDefaultUsers() {
+            console.log("Seeding default users to Cloud...");
+            const defaultUsers = [
+                { id: "user-admin", username: "admin", password: "admin123", name: "Thầy Quản Trị", role: "admin" },
+                { id: "user-student", username: "student", password: "student123", name: "Học Sinh Nguyễn Văn B", role: "student" }
+            ];
+            for (let u of defaultUsers) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', u.id), u);
             }
         }
 
@@ -613,12 +724,6 @@
             document.getElementById('file-info-container').classList.add('hidden');
         }
 
-        // ĐĂNG NHẬP TRẢI NGHIỆM
-        const ACCOUNTS = {
-            'admin': { password: 'admin123', name: 'Thầy Quản Trị', role: 'admin' },
-            'student': { password: 'student123', name: 'Học Sinh Nguyễn Văn B', role: 'student' }
-        };
-
         function fillCreds(username, password) {
             document.getElementById('username').value = username;
             document.getElementById('password').value = password;
@@ -626,19 +731,20 @@
 
         function handleLogin(e) {
             e.preventDefault();
-            const usernameInput = document.getElementById('username').value.trim();
+            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
             const passwordInput = document.getElementById('password').value;
 
-            const matchedUser = ACCOUNTS[usernameInput];
+            // Kiểm tra thông tin tài khoản đồng bộ từ Cloud Firestore thay vì hardcode
+            const matchedUser = state.users.find(u => u.username.toLowerCase() === usernameInput);
 
             if (matchedUser && matchedUser.password === passwordInput) {
                 state.user = {
-                    username: usernameInput,
+                    username: matchedUser.username,
                     name: matchedUser.name,
                     role: matchedUser.role
                 };
 
-                showToast(`Chào mừng ${state.user.name} đã quay lại!`, 'success');
+                showToast(`Chào mừng ${state.user.name} đã đăng nhập thành công!`, 'success');
                 
                 // Đổi màn hình hiển thị
                 document.getElementById('login-screen').classList.add('hidden');
@@ -660,7 +766,7 @@
 
                 renderBooks();
             } else {
-                showToast('Tài khoản hoặc mật khẩu không chính xác!', 'error');
+                showToast('Tài khoản hoặc mật khẩu không chính xác hoặc chưa được khởi tạo!', 'error');
             }
         }
 
@@ -970,6 +1076,124 @@
 
         function closeCategoryMgmtModal() {
             document.getElementById('category-mgmt-modal').classList.add('hidden');
+        }
+
+        // CÁC CHỨC NĂNG QUẢN LÝ THÀNH VIÊN
+        function openUserMgmtModal() {
+            resetUserForm();
+            renderUserList();
+            document.getElementById('user-mgmt-modal').classList.remove('hidden');
+        }
+
+        function closeUserMgmtModal() {
+            document.getElementById('user-mgmt-modal').classList.add('hidden');
+        }
+
+        function resetUserForm() {
+            document.getElementById('user-form').reset();
+            document.getElementById('edit-user-id').value = '';
+            document.getElementById('user-username-input').disabled = false;
+        }
+
+        // Vẽ danh sách thành viên trên giao diện quản trị viên
+        function renderUserList() {
+            const container = document.getElementById('modal-user-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            state.users.forEach(u => {
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-2.5 bg-slate-50 hover:bg-indigo-50/50 rounded-xl border border-slate-200/60 transition";
+                
+                const badgeColor = u.role === 'admin' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800';
+                const isSelf = state.user && state.user.username.toLowerCase() === u.username.toLowerCase();
+
+                item.innerHTML = `
+                    <div class="text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold text-slate-800">${u.name}</span>
+                            <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${badgeColor}">${u.role === 'admin' ? 'Quản Trị' : 'Học Sinh'}</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 font-mono mt-0.5">ID: ${u.username} | Mật khẩu: ${u.password}</p>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="editUser('${u.id}')" class="text-amber-600 hover:text-amber-700 text-xs p-1" title="Sửa thông tin tài khoản">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        ${isSelf ? `
+                            <span class="text-[10px] text-slate-400 italic px-2">Đang sử dụng</span>
+                        ` : `
+                            <button onclick="deleteUser('${u.id}', '${u.name}')" class="text-rose-600 hover:text-rose-700 text-xs p-1" title="Xóa tài khoản này">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        `}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Chỉnh sửa thông tin tài khoản
+        function editUser(id) {
+            const u = state.users.find(user => user.id === id);
+            if (!u) return;
+
+            document.getElementById('edit-user-id').value = u.id;
+            document.getElementById('user-fullname-input').value = u.name;
+            document.getElementById('user-role-input').value = u.role;
+            document.getElementById('user-username-input').value = u.username;
+            document.getElementById('user-username-input').disabled = true; // Tránh sửa đổi username nhận dạng duy nhất
+            document.getElementById('user-password-input').value = u.password;
+        }
+
+        // Tạo tài khoản và đồng bộ Cloud Firestore
+        async function handleSaveUser(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-user-id').value;
+            const name = document.getElementById('user-fullname-input').value.trim();
+            const role = document.getElementById('user-role-input').value;
+            const username = document.getElementById('user-username-input').value.trim().toLowerCase();
+            const password = document.getElementById('user-password-input').value.trim();
+
+            if (!editId) {
+                // Kiểm tra trùng lặp ID đăng nhập
+                if (state.users.some(u => u.username.toLowerCase() === username)) {
+                    showToast("Tên đăng nhập đã tồn tại trên Cloud!", "error");
+                    return;
+                }
+            }
+
+            const targetId = editId ? editId : 'user-' + Date.now().toString();
+
+            const userData = {
+                id: targetId,
+                name,
+                role,
+                username,
+                password
+            };
+
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetId), userData);
+                showToast(editId ? "Đã cập nhật thông tin tài khoản!" : "Tạo tài khoản học sinh thành công!", "success");
+                resetUserForm();
+            } catch (err) {
+                console.error("Error saving user:", err);
+                showToast("Lỗi lưu tài khoản lên Cloud!", "error");
+            }
+        }
+
+        // Xóa thành viên khỏi cơ sở dữ liệu
+        function deleteUser(id, name) {
+            showConfirm(`Bạn chắc chắn muốn xóa tài khoản của "${name}" khỏi hệ thống?`, async () => {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', id));
+                    showToast("Đã xóa tài khoản khỏi hệ thống.", "success");
+                } catch (err) {
+                    console.error("Error deleting user:", err);
+                    showToast("Xóa tài khoản thất bại!", "error");
+                }
+            });
         }
 
         // THÊM DANH MỤC THƯ MỤC MỚI VÀO FIRESTORE
