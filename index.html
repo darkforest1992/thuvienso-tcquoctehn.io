@@ -104,18 +104,6 @@
                         Xác nhận đăng nhập <i class="fa-solid fa-arrow-right ml-2"></i>
                     </button>
                 </form>
-
-                <div class="mt-8 pt-6 border-t border-slate-100">
-                    <p class="text-xs text-slate-500 font-semibold mb-2">Tài khoản trải nghiệm mẫu:</p>
-                    <div class="grid grid-cols-2 gap-2 text-[11px]">
-                        <div class="p-2 bg-indigo-50 rounded-lg text-indigo-800 cursor-pointer hover:bg-indigo-100 transition" onclick="fillCreds('admin', 'admin123')">
-                            <strong>Quản trị (Admin)</strong><br>ID: admin / PW: admin123
-                        </div>
-                        <div class="p-2 bg-emerald-50 rounded-lg text-emerald-800 cursor-pointer hover:bg-emerald-100 transition" onclick="fillCreds('student', 'student123')">
-                            <strong>Học sinh (Student)</strong><br>ID: student / PW: student123
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -407,12 +395,12 @@
         // Lấy cấu hình Firebase và App ID tự động từ hệ thống
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'shared-library-id-2026';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "", // Hệ thống Canvas sẽ tự động cấu hình key khi chạy thực tế
-            authDomain: "dummy-auth.firebaseapp.com",
-            projectId: "dummy-project",
-            storageBucket: "dummy-storage.appspot.com",
-            messagingSenderId: "dummy-sender",
-            appId: "dummy-app"
+          apiKey: "AIzaSyC-lX9wNaPpR_Zo5XvNw_V_IneP0MeLuiQ",
+          authDomain: "e-library-system-6da20.firebaseapp.com",
+          projectId: "e-library-system-6da20",
+          storageBucket: "e-library-system-6da20.firebasestorage.app",
+          messagingSenderId: "35908896006",
+          appId: "1:35908896006:web:d70f88575b8918b5eb8a87"
         };
 
         // Khởi tạo các dịch vụ Firebase
