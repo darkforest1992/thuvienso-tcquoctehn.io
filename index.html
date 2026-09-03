@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome cho Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS (XLSX) để đọc và xuất file Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -33,13 +35,13 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- Hệ thống thông báo toast tự chế -->
+    <!-- Hệ thống thông báo toast -->
     <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm pointer-events-none">
         <div id="toast-icon" class="text-emerald-400"><i class="fa-solid fa-circle-check"></i></div>
         <p id="toast-message" class="text-sm font-medium">Thông báo hệ thống</p>
     </div>
 
-    <!-- Hộp thoại xác nhận tùy biến thay thế confirm() của trình duyệt -->
+    <!-- Hộp thoại xác nhận tùy biến -->
     <div id="confirm-modal" class="hidden fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div class="text-center">
@@ -107,7 +109,7 @@
             </div>
         </div>
 
-        <!-- MÀN HÌNH CHÍNH (Sau khi đăng nhập thành công) -->
+        <!-- MÀN HÌNH CHÍNH -->
         <div id="main-screen" class="hidden flex-1 flex flex-col md:flex-row">
             
             <!-- THANH MENU TRÁI (SIDEBAR) -->
@@ -123,19 +125,42 @@
                     </div>
                 </div>
 
-                <!-- Danh mục Sách (Thư mục) -->
+                <!-- Danh mục Sách & Liên kết Ngoài -->
                 <div class="flex-1 p-4 overflow-y-auto space-y-6">
                     <div>
                         <div class="flex items-center justify-between px-3 mb-2">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Thư mục sách</p>
-                            <!-- Nút chỉnh sửa danh mục, chỉ hiện cho admin -->
                             <button id="admin-category-mgmt" onclick="openCategoryMgmtModal()" class="hidden text-xs text-indigo-400 hover:text-indigo-300 transition" title="Quản lý thư mục">
                                 <i class="fa-solid fa-gear"></i>
                             </button>
                         </div>
                         <nav id="category-menu" class="space-y-1">
-                            <!-- JS tự động tải danh mục động từ DB ở đây -->
+                            <!-- JS tải danh mục động -->
                         </nav>
+                    </div>
+
+                    <!-- KHU VỰC LIÊN KẾT NGOÀI THEO YÊU CẦU -->
+                    <div class="pt-3 border-t border-slate-800">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-2">Liên kết ngoài</p>
+                        <div class="space-y-1.5">
+                            <a href="https://trungcapquoctehanoi.edu.vn/" target="_blank" rel="noopener noreferrer" 
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs text-slate-300 hover:bg-slate-800 hover:text-indigo-400 transition duration-150 group">
+                                <div class="flex items-center gap-3 truncate">
+                                    <i class="fa-solid fa-graduation-cap text-indigo-400 text-sm group-hover:scale-110 transition-transform"></i>
+                                    <span class="truncate font-medium">TC Quốc tế Hà Nội</span>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-500 group-hover:text-indigo-400"></i>
+                            </a>
+
+                            <a href="https://hanoi.edu.vn/" target="_blank" rel="noopener noreferrer" 
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs text-slate-300 hover:bg-slate-800 hover:text-emerald-400 transition duration-150 group">
+                                <div class="flex items-center gap-3 truncate">
+                                    <i class="fa-solid fa-landmark text-emerald-400 text-sm group-hover:scale-110 transition-transform"></i>
+                                    <span class="truncate font-medium">Sở GD&ĐT Hà Nội</span>
+                                </div>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-500 group-hover:text-emerald-400"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -159,11 +184,10 @@
                 </div>
             </aside>
 
-            <!-- KHU VỰC HIỂN THỊ NỘI DUNG (MAIN CONTENT) -->
+            <!-- KHU VỰC HIỂN THỊ NỘI DUNG CHÍNH -->
             <main class="flex-1 flex flex-col min-h-0 bg-slate-50">
-                <!-- Thanh Header Trên -->
+                <!-- Header Trên -->
                 <header class="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between gap-4 shrink-0">
-                    <!-- Thanh Tìm kiếm -->
                     <div class="relative w-full max-w-md">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                             <i class="fa-solid fa-magnifying-glass"></i>
@@ -173,7 +197,7 @@
                             placeholder="Tìm kiếm tên sách, tác giả...">
                     </div>
 
-                    <!-- Nút quản trị (Chỉ Admin nhìn thấy) -->
+                    <!-- Nút quản trị (Chỉ Admin) -->
                     <div id="admin-actions" class="hidden flex items-center gap-2">
                         <button onclick="openUserMgmtModal()"
                             class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-emerald-100 transition duration-150 transform active:scale-95">
@@ -189,7 +213,6 @@
                 <!-- Content Area -->
                 <div class="flex-1 overflow-y-auto p-6">
                     <div class="max-w-6xl mx-auto space-y-6">
-                        <!-- Tiêu đề Thư mục hiện tại -->
                         <div class="flex items-center justify-between">
                             <div>
                                 <h1 class="text-xl font-bold text-slate-900" id="current-folder-title">Tất cả tài liệu</h1>
@@ -200,12 +223,10 @@
                             </span>
                         </div>
 
-                        <!-- LƯỚI SÁCH (BOOK GRID) -->
-                        <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-                            <!-- Các thẻ sách sẽ được JS render tại đây -->
-                        </div>
+                        <!-- LƯỚI SÁCH -->
+                        <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
 
-                        <!-- Trạng thái trống (Empty state) -->
+                        <!-- Empty state -->
                         <div id="empty-state" class="hidden flex-col items-center justify-center text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
                             <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-2xl mb-4">
                                 <i class="fa-solid fa-folder-open"></i>
@@ -218,11 +239,10 @@
             </main>
         </div>
 
-        <!-- MODAL ĐỌC SÁCH (Sử dụng cho tất cả người dùng) -->
+        <!-- MODAL ĐỌC SÁCH -->
         <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-                <!-- Header của Trình đọc -->
-                <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 bg-slate-100/50">
+                <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                     <div class="flex items-center gap-3">
                         <span class="px-2 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold rounded-lg uppercase" id="reader-book-category">
                             Học tập
@@ -233,9 +253,7 @@
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
-                <!-- Nội dung Sách Mô phỏng hoặc file tải lên -->
                 <div class="flex-1 overflow-y-auto p-8 md:p-12 bg-amber-50/20 text-slate-700 leading-relaxed font-serif text-lg selection:bg-amber-100">
-                    <!-- File đính kèm hiển thị thông minh -->
                     <div id="reader-file-attachment" class="hidden mb-6 p-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-lg">
@@ -250,12 +268,8 @@
                             <i class="fa-solid fa-download"></i> Tải về tài liệu gốc
                         </a>
                     </div>
-                    
-                    <div class="max-w-2xl mx-auto space-y-6" id="reader-content-body">
-                        <!-- Sẽ sinh nội dung giả lập ở đây -->
-                    </div>
+                    <div class="max-w-2xl mx-auto space-y-6" id="reader-content-body"></div>
                 </div>
-                <!-- Footer Trình đọc -->
                 <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 bg-white">
                     <span>Hệ thống phân phối tài liệu nội bộ trường học</span>
                     <span class="font-mono">Trang 1 / 1 (Mô phỏng bản đầy đủ)</span>
@@ -263,17 +277,15 @@
             </div>
         </div>
 
-        <!-- MODAL THÊM / CHỈNH SỬA SÁCH (Chỉ cho Admin) -->
+        <!-- MODAL THÊM / CHỈNH SỬA SÁCH -->
         <div id="book-form-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-                <!-- Header -->
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
                     <h3 class="font-bold text-slate-800 text-lg" id="modal-form-title">Thêm Sách Mới</h3>
                     <button onclick="closeBookFormModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
-                <!-- Form body -->
                 <form id="book-form" onsubmit="handleSaveBook(event)" class="flex-1 overflow-y-auto p-6 space-y-4">
                     <input type="hidden" id="edit-book-id">
                     
@@ -294,9 +306,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Thư mục/Thể loại *</label>
                             <select id="book-category-input" required
-                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                                <!-- Các option danh mục được tạo tự động -->
-                            </select>
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"></select>
                         </div>
                     </div>
 
@@ -304,10 +314,9 @@
                         <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Link Ảnh Bìa (URL)</label>
                         <input type="url" id="book-cover-input"
                             class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" 
-                            placeholder="https://example.com/cover.jpg (Để trống để lấy ảnh mặc định)">
+                            placeholder="https://example.com/cover.jpg">
                     </div>
 
-                    <!-- Tải tài liệu lên trực tiếp -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Đính kèm tệp tài liệu (< 1MB)</label>
                         <div id="dropzone" class="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl p-6 text-center cursor-pointer transition bg-slate-50 flex flex-col items-center justify-center gap-2">
@@ -320,7 +329,6 @@
                             <p class="text-[10px] text-slate-400">PDF, TXT, DOC, PNG, JPG (Tối đa 1MB)</p>
                             <input type="file" id="book-file-input" class="hidden" accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg">
                         </div>
-                        <!-- Hiển thị thông tin tệp đã tải -->
                         <div id="file-info-container" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
                             <div class="flex items-center gap-2 overflow-hidden">
                                 <i class="fa-solid fa-file-shield text-emerald-500 text-sm"></i>
@@ -339,7 +347,6 @@
                             placeholder="Nhập nội dung giảng dạy, tóm tắt hoặc ghi chú..."></textarea>
                     </div>
 
-                    <!-- Nút hành động cố định dưới chân modal -->
                     <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3 shrink-0">
                         <button type="button" onclick="closeBookFormModal()"
                             class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
@@ -354,7 +361,7 @@
             </div>
         </div>
 
-        <!-- MODAL QUẢN LÝ DANH MỤC (Chỉ cho Admin) -->
+        <!-- MODAL QUẢN LÝ DANH MỤC -->
         <div id="category-mgmt-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
@@ -364,50 +371,77 @@
                     </button>
                 </div>
                 <div class="p-6 space-y-4">
-                    <!-- Form thêm danh mục -->
                     <form id="category-form" onsubmit="handleSaveCategory(event)" class="space-y-3">
                         <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">Tạo thư mục mới</label>
                         <div class="flex gap-2">
                             <input type="text" id="category-name-input" required
                                 class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition" 
-                                placeholder="Ví dụ: Lịch Sử, Khoa Học Tự Nhiên">
+                                placeholder="Ví dụ: Lịch Sử, Khoa Học">
                             <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
                                 Thêm
                             </button>
                         </div>
                     </form>
 
-                    <!-- Danh sách các thư mục hiện có -->
                     <div class="pt-4 border-t border-slate-100">
                         <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Danh sách thư mục trên Cloud</p>
-                        <div id="modal-category-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
-                            <!-- Các thư mục hiển thị động ở đây -->
-                        </div>
+                        <div id="modal-category-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL QUẢN LÝ THÀNH VIÊN (Chỉ cho Admin) -->
+        <!-- MODAL QUẢN LÝ THÀNH VIÊN (CÓ THÊM TÍNH NĂNG NHẬP EXCEL) -->
         <div id="user-mgmt-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                 <!-- Header -->
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
-                    <h3 class="font-bold text-slate-800 text-lg">Quản Lý Thành Viên Thư Viện</h3>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Quản Lý Thành Viên Thư Viện</h3>
+                        <p class="text-xs text-slate-500">Cấp tài khoản đơn lẻ hoặc nhập danh sách bằng file Excel</p>
+                    </div>
                     <button onclick="closeUserMgmtModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
+
                 <!-- Body -->
                 <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    <!-- Form thêm/sửa thành viên -->
+                    
+                    <!-- KHU VỰC THÊM HÀNG LOẠT BẰNG EXCEL -->
+                    <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-2xl">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Nhập danh sách từ Excel (.xlsx, .xls)</h4>
+                                    <p class="text-[11px] text-slate-500">Thêm nhiều tài khoản học sinh / giáo viên cùng lúc</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="downloadExcelTemplate()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-indigo-400 text-indigo-600 rounded-lg text-xs font-semibold transition shadow-sm">
+                                <i class="fa-solid fa-download"></i> Tải file mẫu Excel
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
+                            <button type="button" onclick="document.getElementById('excel-file-input').click()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm transition">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn file Excel tải lên
+                            </button>
+                            <span id="excel-status-text" class="text-xs text-slate-500 italic">Chưa chọn file</span>
+                        </div>
+                    </div>
+
+                    <!-- Form thêm/sửa tài khoản đơn lẻ -->
                     <form id="user-form" onsubmit="handleSaveUser(event)" class="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/60">
-                        <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cấp tài khoản mới / Chỉnh sửa</p>
+                        <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cấp tài khoản đơn lẻ / Chỉnh sửa</p>
                         <input type="hidden" id="edit-user-id">
                         
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Họ và tên học sinh *</label>
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Họ và tên *</label>
                                 <input type="text" id="user-fullname-input" required
                                     class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition" 
                                     placeholder="Ví dụ: Nguyễn Văn C">
@@ -422,7 +456,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Tên đăng nhập *</label>
                                 <input type="text" id="user-username-input" required
@@ -445,10 +479,11 @@
 
                     <!-- Danh sách người dùng hiện tại -->
                     <div class="pt-4 border-t border-slate-100">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Danh sách tài khoản trên Cloud</p>
-                        <div id="modal-user-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                            <!-- Danh sách render động ở đây -->
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Danh sách tài khoản trên Cloud</p>
+                            <span class="text-[11px] font-medium bg-slate-200/60 px-2 py-0.5 rounded-md text-slate-600" id="user-total-badge">0 tài khoản</span>
                         </div>
+                        <div id="modal-user-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
                     </div>
                 </div>
             </div>
@@ -456,29 +491,26 @@
 
     </div>
 
-    <!-- Nhúng Firebase 11.6.1 SDK trực tiếp -->
+    <!-- Nhúng Firebase SDK trực tiếp -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Lấy cấu hình Firebase và App ID tự động từ hệ thống
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'shared-library-id-2026';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-                      apiKey: "AIzaSyC-lX9wNaPpR_Zo5XvNw_V_IneP0MeLuiQ",
-                      authDomain: "e-library-system-6da20.firebaseapp.com",
-                      projectId: "e-library-system-6da20",
-                      storageBucket: "e-library-system-6da20.firebasestorage.app",
-                      messagingSenderId: "35908896006",
-                      appId: "1:35908896006:web:d70f88575b8918b5eb8a87"
+            apiKey: "AIzaSyC-lX9wNaPpR_Zo5XvNw_V_IneP0MeLuiQ",
+            authDomain: "e-library-system-6da20.firebaseapp.com",
+            projectId: "e-library-system-6da20",
+            storageBucket: "e-library-system-6da20.firebasestorage.app",
+            messagingSenderId: "35908896006",
+            appId: "1:35908896006:web:d70f88575b8918b5eb8a87"
         };
 
-        // Khởi tạo các dịch vụ Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // KHO DỮ LIỆU BAN ĐẦU (Dùng để khởi tạo mẫu nếu database hoàn toàn trống)
         const DEFAULT_CATEGORIES = [
             { id: "cat-1", name: "Toán Học" },
             { id: "cat-2", name: "Ngữ Văn" },
@@ -494,7 +526,7 @@
                 author: "GS. Hoàng Tụy",
                 category: "Toán Học",
                 cover: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=350&auto=format&fit=crop",
-                content: "Đại số là một nhánh toán học lớn, nghiên cứu về các cấu trúc toán học phức tạp. Giải tích tập trung vào các khái niệm về giới hạn, chuỗi vô hạn, vi phân và tích phân. Giáo trình này cung cấp các phân tích tích phân đa biến số hiện đại nhất."
+                content: "Đại số là một nhánh toán học lớn, nghiên cứu về các cấu trúc toán học phức tạp. Giải tích tập trung vào các khái niệm về giới hạn, chuỗi vô hạn, vi phân và tích phân."
             },
             {
                 id: "book-2",
@@ -506,23 +538,20 @@
             }
         ];
 
-        // TRẠNG THÁI HỆ THỐNG
         let state = {
             user: null, 
             categories: [],
             books: [],
-            users: [], // Thêm để quản lý tài khoản thành viên học sinh/admin
+            users: [],
             activeCategory: "Toàn bộ",
             searchTerm: "",
-            uploadedFile: null // Lưu trữ tệp tin tạm thời khi upload { name, size, type, base64 }
+            uploadedFile: null
         };
 
-        // TIẾP CẬN FIRESTORE THEO PATH QUY ĐỊNH (RULE 1)
         const categoriesRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
         const booksRef = collection(db, 'artifacts', appId, 'public', 'data', 'books');
         const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
 
-        // BẢO MẬT & ĐĂNG NHẬP TRƯỚC KHI TRUY VẤN (RULE 3)
         async function authenticateDatabase() {
             try {
                 const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -531,9 +560,6 @@
                 } else {
                     await signInAnonymously(auth);
                 }
-                console.log("Database Auth Success!");
-                
-                // Sau khi kết nối thành công, bắt đầu lắng nghe Real-time
                 startRealtimeSync();
             } catch (error) {
                 console.error("Database Auth Failed:", error);
@@ -541,7 +567,7 @@
             }
         }
 
-        // ĐĂNG KÝ HÀM TOÀN CỤC CHO CÁC SỰ KIỆN GIAO DIỆN
+        // Đăng ký toàn cục
         window.handleLogin = handleLogin;
         window.fillCreds = fillCreds;
         window.handleLogout = handleLogout;
@@ -560,23 +586,22 @@
         window.deleteCategory = deleteCategory;
         window.handleSearch = handleSearch;
 
-        // Các hàm toàn cục mới hỗ trợ Quản lý thành viên
+        // Quản lý thành viên & Excel
         window.openUserMgmtModal = openUserMgmtModal;
         window.closeUserMgmtModal = closeUserMgmtModal;
         window.resetUserForm = resetUserForm;
         window.handleSaveUser = handleSaveUser;
         window.editUser = editUser;
         window.deleteUser = deleteUser;
+        window.downloadExcelTemplate = downloadExcelTemplate;
+        window.handleExcelUpload = handleExcelUpload;
 
-        // KHỞI ĐỘNG HỆ THỐNG KHI LOAD TRANG
         window.addEventListener('load', () => {
             authenticateDatabase();
             setupFileUploader();
         });
 
-        // ĐỒNG BỘ DỮ LIỆU REAL-TIME TỪ CLOUD (RULE 2: Chỉ lấy bộ sưu tập đơn giản rồi filter trên bộ nhớ)
         function startRealtimeSync() {
-            // Lắng nghe Danh Mục (Thư mục sách)
             onSnapshot(categoriesRef, (snapshot) => {
                 const fetchedCategories = [];
                 snapshot.forEach(doc => {
@@ -584,7 +609,6 @@
                 });
                 state.categories = fetchedCategories;
 
-                // Nếu cơ sở dữ liệu trống, tự động gieo dữ liệu mẫu ban đầu
                 if (state.categories.length === 0) {
                     seedDefaultData();
                     return;
@@ -593,11 +617,8 @@
                 renderCategoryMenu();
                 populateCategorySelect();
                 renderCategoryMgmtList();
-            }, (error) => {
-                console.error("Categories snapshot error:", error);
             });
 
-            // Lắng nghe các tài liệu sách
             onSnapshot(booksRef, (snapshot) => {
                 const fetchedBooks = [];
                 snapshot.forEach(doc => {
@@ -605,12 +626,9 @@
                 });
                 state.books = fetchedBooks;
                 renderBooks();
-                renderCategoryMenu(); // Cập nhật lại số lượng sách đính kèm
-            }, (error) => {
-                console.error("Books snapshot error:", error);
+                renderCategoryMenu();
             });
 
-            // Lắng nghe danh sách Thành viên học sinh/admin
             onSnapshot(usersRef, (snapshot) => {
                 const fetchedUsers = [];
                 snapshot.forEach(doc => {
@@ -618,21 +636,16 @@
                 });
                 state.users = fetchedUsers;
 
-                // Gieo người dùng mặc định nếu danh sách trống
                 if (state.users.length === 0) {
                     seedDefaultUsers();
                     return;
                 }
 
                 renderUserList();
-            }, (error) => {
-                console.error("Users snapshot error:", error);
             });
         }
 
-        // TỰ ĐỘNG KHỞI TẠO DỮ LIỆU MẪU KHI DB RỖNG
         async function seedDefaultData() {
-            console.log("Seeding default dynamic data to Cloud...");
             for (let cat of DEFAULT_CATEGORIES) {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', cat.id), cat);
             }
@@ -641,9 +654,7 @@
             }
         }
 
-        // TỰ ĐỘNG KHỞI TẠO TÀI KHOẢN MẪU LÊN CLOUD
         async function seedDefaultUsers() {
-            console.log("Seeding default users to Cloud...");
             const defaultUsers = [
                 { id: "user-admin", username: "admin", password: "admin123", name: "Thầy Quản Trị", role: "admin" },
                 { id: "user-student", username: "student", password: "student123", name: "Học Sinh Nguyễn Văn B", role: "student" }
@@ -653,7 +664,6 @@
             }
         }
 
-        // THIẾT LẬP KÉO THẢ TẢI TỆP TIN
         function setupFileUploader() {
             const dropzone = document.getElementById('dropzone');
             const fileInput = document.getElementById('book-file-input');
@@ -684,9 +694,8 @@
             });
         }
 
-        // CHUYỂN ĐỔI TỆP TIN SANG BASE64 LƯU TRỮ CLOUD
         function processFile(file) {
-            if (file.size > 1024 * 1024) { // Giới hạn 1MB đảm bảo tối ưu Firestore Document
+            if (file.size > 1024 * 1024) {
                 showToast("Dung lượng tệp vượt quá 1MB!", "error");
                 return;
             }
@@ -700,11 +709,9 @@
                     base64: e.target.result
                 };
                 
-                // Hiển thị giao diện tệp đã nạp thành công
                 document.getElementById('file-name-display').textContent = file.name;
                 document.getElementById('file-info-container').classList.remove('hidden');
                 
-                // Nếu là file txt, tự động đọc và điền thử vào khung nội dung cho tiện
                 if (file.type === "text/plain") {
                     const textReader = new FileReader();
                     textReader.onload = function(evt) {
@@ -734,7 +741,6 @@
             const usernameInput = document.getElementById('username').value.trim().toLowerCase();
             const passwordInput = document.getElementById('password').value;
 
-            // Kiểm tra thông tin tài khoản đồng bộ từ Cloud Firestore thay vì hardcode
             const matchedUser = state.users.find(u => u.username.toLowerCase() === usernameInput);
 
             if (matchedUser && matchedUser.password === passwordInput) {
@@ -744,9 +750,8 @@
                     role: matchedUser.role
                 };
 
-                showToast(`Chào mừng ${state.user.name} đã đăng nhập thành công!`, 'success');
+                showToast(`Chào mừng ${state.user.name} đã đăng nhập!`, 'success');
                 
-                // Đổi màn hình hiển thị
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-screen').classList.remove('hidden');
 
@@ -766,7 +771,7 @@
 
                 renderBooks();
             } else {
-                showToast('Tài khoản hoặc mật khẩu không chính xác hoặc chưa được khởi tạo!', 'error');
+                showToast('Tài khoản hoặc mật khẩu không chính xác!', 'error');
             }
         }
 
@@ -780,12 +785,10 @@
             showToast('Đã đăng xuất tài khoản an toàn.', 'success');
         }
 
-        // VẼ THANH DANH MỤC TRÁI (BÊN TRONG SIDEBAR)
         function renderCategoryMenu() {
             const menuContainer = document.getElementById('category-menu');
             menuContainer.innerHTML = '';
 
-            // Luôn có danh mục mặc định "Toàn bộ"
             const allCategories = ["Toàn bộ", ...state.categories.map(c => c.name)];
 
             allCategories.forEach(cat => {
@@ -795,7 +798,7 @@
                     : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100';
 
                 const button = document.createElement('button');
-                button.className = `w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition duration-150 ${activeClass}`;
+                button.className = `w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition duration-150 ${activeClass}`;
                 button.onclick = () => selectCategory(cat);
 
                 let icon = 'fa-folder';
@@ -811,7 +814,7 @@
                         <i class="fa-solid ${icon} text-sm"></i>
                         <span>${cat}</span>
                     </div>
-                    <span class="text-[11px] px-1.5 py-0.5 rounded-full ${isActive ? 'bg-indigo-500/30' : 'bg-slate-800'} text-slate-300">
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full ${isActive ? 'bg-indigo-500/30' : 'bg-slate-800'} text-slate-300">
                         ${getBooksCountInCategory(cat)}
                     </span>
                 `;
@@ -848,7 +851,6 @@
             renderBooks();
         }
 
-        // VẼ DANH SÁCH THẺ SÁCH TRÊN GIAO DIỆN
         function renderBooks() {
             const grid = document.getElementById('books-grid');
             const emptyState = document.getElementById('empty-state');
@@ -935,7 +937,6 @@
             });
         }
 
-        // XEM & ĐỌC TÀI LIỆU SÁCH
         function readBook(id) {
             const book = state.books.find(b => b.id === id);
             if (!book) return;
@@ -943,7 +944,6 @@
             document.getElementById('reader-book-title').textContent = book.title;
             document.getElementById('reader-book-category').textContent = book.category;
             
-            // Xử lý tệp đính kèm tải lên nếu có
             const fileAttachmentBox = document.getElementById('reader-file-attachment');
             if (book.attachedFile) {
                 document.getElementById('attached-file-name').textContent = book.attachedFile.name;
@@ -956,7 +956,6 @@
                 fileAttachmentBox.classList.add('hidden');
             }
 
-            // Xây dựng đoạn văn bản
             const paragraphs = book.content.split('\n');
             let contentHTML = `<h2 class="text-2xl font-bold font-sans text-slate-900 mb-6 border-b pb-4">${book.title}</h2>`;
             contentHTML += `<p class="italic text-slate-500 mb-8 font-sans text-sm">Tác giả: ${book.author || 'Chưa rõ tác giả'}</p>`;
@@ -975,7 +974,6 @@
             document.getElementById('reader-modal').classList.add('hidden');
         }
 
-        // THÊM SÁCH MỚI
         function openAddBookModal() {
             document.getElementById('modal-form-title').textContent = "Thêm Tài Liệu Thư Viện Mới";
             document.getElementById('book-form').reset();
@@ -984,7 +982,6 @@
             document.getElementById('book-form-modal').classList.remove('hidden');
         }
 
-        // SỬA SÁCH
         function editBook(id) {
             const book = state.books.find(b => b.id === id);
             if (!book) return;
@@ -1007,7 +1004,6 @@
             document.getElementById('book-form-modal').classList.remove('hidden');
         }
 
-        // LƯU SÁCH VÀO CLOUD FIRESTORE
         async function handleSaveBook(e) {
             e.preventDefault();
             
@@ -1029,34 +1025,30 @@
                 content
             };
 
-            // Lưu đính kèm tệp nếu có
             if (state.uploadedFile) {
                 bookData.attachedFile = state.uploadedFile;
             } else {
-                // Nếu không có tệp đính kèm hoặc bị gỡ bỏ, ta đảm bảo không lưu thông tin tệp cũ
                 bookData.attachedFile = null;
             }
 
             try {
-                // Sử dụng setDoc đồng bộ lưu trực tiếp lên cơ sở dữ liệu Firestore
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', targetId), bookData);
-                showToast(editId ? 'Đã cập nhật thông tin sách lên đám mây!' : 'Thêm mới tài liệu vào thư viện thành công!', 'success');
+                showToast(editId ? 'Đã cập nhật thông tin sách!' : 'Thêm tài liệu thành công!', 'success');
                 closeBookFormModal();
             } catch (error) {
                 console.error("Error saving book:", error);
-                showToast("Không thể lưu dữ liệu lên Cloud Database!", "error");
+                showToast("Không thể lưu dữ liệu lên Cloud!", "error");
             }
         }
 
-        // XÓA SÁCH KHỎI CLOUD (Không dùng alert/confirm của browser)
         function deleteBook(id) {
             const book = state.books.find(b => b.id === id);
             if (!book) return;
 
-            showConfirm(`Bạn chắc chắn muốn xóa tài liệu "${book.title}" khỏi thư viện?`, async () => {
+            showConfirm(`Bạn chắc chắn muốn xóa tài liệu "${book.title}"?`, async () => {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', id));
-                    showToast('Đã gỡ bỏ tài liệu khỏi cơ sở dữ liệu.', 'success');
+                    showToast('Đã gỡ bỏ tài liệu.', 'success');
                 } catch (error) {
                     console.error("Error deleting book:", error);
                     showToast("Xóa tài liệu thất bại!", "error");
@@ -1068,7 +1060,6 @@
             document.getElementById('book-form-modal').classList.add('hidden');
         }
 
-        // QUẢN LÝ THƯ MỤC CLOUD
         function openCategoryMgmtModal() {
             renderCategoryMgmtList();
             document.getElementById('category-mgmt-modal').classList.remove('hidden');
@@ -1078,10 +1069,14 @@
             document.getElementById('category-mgmt-modal').classList.add('hidden');
         }
 
-        // CÁC CHỨC NĂNG QUẢN LÝ THÀNH VIÊN
+        // ==========================================
+        // QUẢN LÝ THÀNH VIÊN VÀ NHẬP EXCEL
+        // ==========================================
         function openUserMgmtModal() {
             resetUserForm();
             renderUserList();
+            document.getElementById('excel-file-input').value = '';
+            document.getElementById('excel-status-text').textContent = 'Chưa chọn file';
             document.getElementById('user-mgmt-modal').classList.remove('hidden');
         }
 
@@ -1095,11 +1090,12 @@
             document.getElementById('user-username-input').disabled = false;
         }
 
-        // Vẽ danh sách thành viên trên giao diện quản trị viên
         function renderUserList() {
             const container = document.getElementById('modal-user-list');
             if (!container) return;
             container.innerHTML = '';
+
+            document.getElementById('user-total-badge').textContent = `${state.users.length} tài khoản`;
 
             state.users.forEach(u => {
                 const item = document.createElement('div');
@@ -1114,16 +1110,16 @@
                             <span class="text-xs font-semibold text-slate-800">${u.name}</span>
                             <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${badgeColor}">${u.role === 'admin' ? 'Quản Trị' : 'Học Sinh'}</span>
                         </div>
-                        <p class="text-[10px] text-slate-500 font-mono mt-0.5">ID: ${u.username} | Mật khẩu: ${u.password}</p>
+                        <p class="text-[10px] text-slate-500 font-mono mt-0.5">ID: <span class="text-indigo-600">${u.username}</span> | Mật khẩu: ${u.password}</p>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <button onclick="editUser('${u.id}')" class="text-amber-600 hover:text-amber-700 text-xs p-1" title="Sửa thông tin tài khoản">
+                        <button onclick="editUser('${u.id}')" class="text-amber-600 hover:text-amber-700 text-xs p-1" title="Sửa thông tin">
                             <i class="fa-solid fa-pen"></i>
                         </button>
                         ${isSelf ? `
-                            <span class="text-[10px] text-slate-400 italic px-2">Đang sử dụng</span>
+                            <span class="text-[10px] text-slate-400 italic px-2">Đang dùng</span>
                         ` : `
-                            <button onclick="deleteUser('${u.id}', '${u.name}')" class="text-rose-600 hover:text-rose-700 text-xs p-1" title="Xóa tài khoản này">
+                            <button onclick="deleteUser('${u.id}', '${u.name}')" class="text-rose-600 hover:text-rose-700 text-xs p-1" title="Xóa tài khoản">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         `}
@@ -1133,7 +1129,6 @@
             });
         }
 
-        // Chỉnh sửa thông tin tài khoản
         function editUser(id) {
             const u = state.users.find(user => user.id === id);
             if (!u) return;
@@ -1142,11 +1137,10 @@
             document.getElementById('user-fullname-input').value = u.name;
             document.getElementById('user-role-input').value = u.role;
             document.getElementById('user-username-input').value = u.username;
-            document.getElementById('user-username-input').disabled = true; // Tránh sửa đổi username nhận dạng duy nhất
+            document.getElementById('user-username-input').disabled = true;
             document.getElementById('user-password-input').value = u.password;
         }
 
-        // Tạo tài khoản và đồng bộ Cloud Firestore
         async function handleSaveUser(e) {
             e.preventDefault();
             const editId = document.getElementById('edit-user-id').value;
@@ -1156,9 +1150,8 @@
             const password = document.getElementById('user-password-input').value.trim();
 
             if (!editId) {
-                // Kiểm tra trùng lặp ID đăng nhập
                 if (state.users.some(u => u.username.toLowerCase() === username)) {
-                    showToast("Tên đăng nhập đã tồn tại trên Cloud!", "error");
+                    showToast("Tên đăng nhập đã tồn tại trên hệ thống!", "error");
                     return;
                 }
             }
@@ -1175,20 +1168,19 @@
 
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetId), userData);
-                showToast(editId ? "Đã cập nhật thông tin tài khoản!" : "Tạo tài khoản học sinh thành công!", "success");
+                showToast(editId ? "Đã cập nhật thông tin tài khoản!" : "Tạo tài khoản thành công!", "success");
                 resetUserForm();
             } catch (err) {
                 console.error("Error saving user:", err);
-                showToast("Lỗi lưu tài khoản lên Cloud!", "error");
+                showToast("Lỗi khi lưu tài khoản lên Cloud!", "error");
             }
         }
 
-        // Xóa thành viên khỏi cơ sở dữ liệu
         function deleteUser(id, name) {
             showConfirm(`Bạn chắc chắn muốn xóa tài khoản của "${name}" khỏi hệ thống?`, async () => {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', id));
-                    showToast("Đã xóa tài khoản khỏi hệ thống.", "success");
+                    showToast("Đã xóa tài khoản thành công.", "success");
                 } catch (err) {
                     console.error("Error deleting user:", err);
                     showToast("Xóa tài khoản thất bại!", "error");
@@ -1196,7 +1188,110 @@
             });
         }
 
-        // THÊM DANH MỤC THƯ MỤC MỚI VÀO FIRESTORE
+        // TẢI FILE MẪU EXCEL TÀI KHOẢN
+        function downloadExcelTemplate() {
+            const templateData = [
+                {
+                    "Tên đăng nhập": "hocsinh01",
+                    "Họ và tên": "Trần Thu Hà",
+                    "Mật khẩu": "123456",
+                    "Quyền truy cập": "student"
+                },
+                {
+                    "Tên đăng nhập": "giaovien01",
+                    "Họ và tên": "Nguyễn Hoàng Long",
+                    "Mật khẩu": "gv@2026",
+                    "Quyền truy cập": "admin"
+                }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(templateData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "DanhSachTaiKhoan");
+            XLSX.writeFile(wb, "Mau_Them_Tai_Khoan.xlsx");
+        }
+
+        // ĐỌC VÀ NHẬP TÀI KHOẢN TỪ FILE EXCEL
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('excel-status-text');
+            statusEl.textContent = `Đang đọc: ${file.name}...`;
+
+            const reader = new FileReader();
+            reader.onload = async function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (!jsonData || jsonData.length === 0) {
+                        showToast("File Excel trống hoặc không đúng định dạng!", "error");
+                        statusEl.textContent = "File không có dữ liệu.";
+                        return;
+                    }
+
+                    let successCount = 0;
+                    let duplicateCount = 0;
+                    const existingUsernames = new Set(state.users.map(u => u.username.toLowerCase()));
+
+                    for (let row of jsonData) {
+                        // Nhận diện linh hoạt các tên cột (có dấu hoặc không dấu)
+                        const username = (row['Tên đăng nhập'] || row['username'] || row['Tài khoản'] || '').toString().trim().toLowerCase();
+                        const name = (row['Họ và tên'] || row['name'] || row['Họ tên'] || '').toString().trim();
+                        const password = (row['Mật khẩu'] || row['password'] || '123456').toString().trim();
+                        let role = (row['Quyền truy cập'] || row['role'] || 'student').toString().trim().toLowerCase();
+
+                        if (role !== 'admin' && role !== 'student') {
+                            role = 'student';
+                        }
+
+                        if (!username || !name) {
+                            continue; // Bỏ qua nếu thiếu trường bắt buộc
+                        }
+
+                        if (existingUsernames.has(username)) {
+                            duplicateCount++;
+                            continue;
+                        }
+
+                        // Tạo và lưu tài khoản vào Firestore
+                        const newId = 'user-' + Date.now().toString() + '-' + Math.random().toString(36).substring(2, 7);
+                        const newUser = {
+                            id: newId,
+                            name,
+                            role,
+                            username,
+                            password
+                        };
+
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', newId), newUser);
+                        existingUsernames.add(username);
+                        successCount++;
+                    }
+
+                    e.target.value = ''; // Reset input file
+                    statusEl.textContent = `Đã nhập xong: ${successCount} tài khoản.`;
+                    
+                    if (successCount > 0) {
+                        showToast(`Nhập thành công ${successCount} tài khoản!` + (duplicateCount > 0 ? ` (Bỏ qua ${duplicateCount} trùng lặp)` : ''), "success");
+                    } else {
+                        showToast(`Không có tài khoản mới nào được thêm! (${duplicateCount} tài khoản đã tồn tại)`, "error");
+                    }
+
+                } catch (err) {
+                    console.error("Excel processing error:", err);
+                    showToast("Lỗi khi xử lý file Excel!", "error");
+                    statusEl.textContent = "Lỗi xử lý file.";
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Quản lý chuyên mục
         async function handleSaveCategory(e) {
             e.preventDefault();
             const input = document.getElementById('category-name-input');
@@ -1213,7 +1308,7 @@
                     id: catId,
                     name: name
                 });
-                showToast("Thêm mới thư mục sách thành công!", "success");
+                showToast("Thêm mới thư mục thành công!", "success");
                 input.value = '';
             } catch (error) {
                 console.error("Error adding category:", error);
@@ -1221,9 +1316,7 @@
             }
         }
 
-        // XÓA DANH MỤC THƯ MỤC KHỎI FIRESTORE
         function deleteCategory(id, name) {
-            // Kiểm tra xem có sách nào đang nằm trong danh mục này không
             const bookCount = state.books.filter(b => b.category === name).length;
             if (bookCount > 0) {
                 showToast(`Không thể xóa thư mục có chứa tài liệu (${bookCount} tài liệu)!`, "error");
@@ -1233,8 +1326,7 @@
             showConfirm(`Bạn muốn xóa thư mục "${name}"?`, async () => {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', id));
-                    showToast("Đã xóa thư mục sách khỏi hệ thống.", "success");
-                    // Reset lọc nếu danh mục đang chọn bị xóa
+                    showToast("Đã xóa thư mục khỏi hệ thống.", "success");
                     if (state.activeCategory === name) {
                         selectCategory("Toàn bộ");
                     }
@@ -1245,7 +1337,6 @@
             });
         }
 
-        // VẼ DANH SÁCH DANH MỤC TRONG MODAL QUẢN LÝ
         function renderCategoryMgmtList() {
             const container = document.getElementById('modal-category-list');
             container.innerHTML = '';
@@ -1264,7 +1355,6 @@
             });
         }
 
-        // HỘP THOẠI XÁC NHẬN TÙY BIẾN THAY THẾ confirm()
         function showConfirm(message, callback) {
             const modal = document.getElementById('confirm-modal');
             const messageEl = document.getElementById('confirm-message');
@@ -1274,7 +1364,6 @@
             messageEl.textContent = message;
             modal.classList.remove('hidden');
 
-            // Reset sự kiện để tránh tích tụ sự kiện cũ
             const newOkBtn = okBtn.cloneNode(true);
             const newCancelBtn = cancelBtn.cloneNode(true);
             okBtn.parentNode.replaceChild(newOkBtn, okBtn);
@@ -1290,7 +1379,6 @@
             });
         }
 
-        // TOAST HIỂN THỊ THÔNG BÁO CHUYÊN NGHIỆP
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const messageEl = document.getElementById('toast-message');
@@ -1310,13 +1398,11 @@
             }
 
             toast.classList.remove('translate-x-full');
-            
             setTimeout(() => {
                 toast.classList.add('translate-x-full');
             }, 3000);
         }
 
-        // Định dạng kích thước tệp gọn đẹp
         function formatBytes(bytes, decimals = 2) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
