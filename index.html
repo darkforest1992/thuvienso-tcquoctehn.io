@@ -199,6 +199,10 @@
                             class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-emerald-100 transition duration-150 transform active:scale-95">
                             <i class="fa-solid fa-users-gear"></i> Quản lý thành viên
                         </button>
+                        <button onclick="openBulkBookImportModal()"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-emerald-100 transition duration-150 transform active:scale-95">
+                            <i class="fa-solid fa-file-excel"></i> Nhập nhiều tài liệu
+                        </button>
                         <button onclick="openAddBookModal()"
                             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-indigo-100 transition duration-150 transform active:scale-95">
                             <i class="fa-solid fa-plus"></i> Thêm tài liệu mới
@@ -386,6 +390,104 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- MODAL NHẬP NHIỀU TÀI LIỆU TỪ EXCEL -->
+        <div id="bulk-book-import-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Nhập Nhiều Tài Liệu Bằng Excel</h3>
+                        <p class="text-xs text-slate-500">Thêm hàng loạt tài liệu vào thư viện mà không ảnh hưởng chức năng nhập từng tài liệu.</p>
+                    </div>
+                    <button onclick="closeBulkBookImportModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="p-6 flex-1 overflow-y-auto space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Bước 1: Tải file mẫu</h4>
+                                    <p class="text-[11px] text-slate-500">Điền dữ liệu theo đúng tên cột.</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="downloadBookExcelTemplate()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-200 hover:border-emerald-400 text-emerald-600 rounded-lg text-xs font-semibold transition shadow-sm">
+                                <i class="fa-solid fa-download"></i> Tải file mẫu tài liệu
+                            </button>
+                        </div>
+
+                        <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-upload"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Bước 2: Chọn file Excel</h4>
+                                    <p class="text-[11px] text-slate-500">Hỗ trợ .xlsx và .xls.</p>
+                                </div>
+                            </div>
+                            <input type="file" id="bulk-book-excel-input" accept=".xlsx,.xls" class="hidden" onchange="handleBulkBookExcelUpload(event)">
+                            <button type="button" onclick="document.getElementById('bulk-book-excel-input').click()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition shadow-sm">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn file Excel
+                            </button>
+                            <span id="bulk-book-excel-status" class="ml-2 text-[11px] text-slate-500 italic">Chưa chọn file</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-100 rounded-2xl p-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                            <div class="text-[11px] text-slate-600 leading-relaxed">
+                                <p class="font-bold text-slate-700 mb-1">Các cột được hỗ trợ:</p>
+                                <p><b>Tên đầu sách *</b>, <b>Tác giả</b>, <b>Thư mục/Thể loại *</b>, <b>Link Ảnh Bìa</b>, <b>Link tài liệu</b>, <b>Nội dung văn bản</b>.</p>
+                                <p class="mt-1">Có thể dùng tên cột tiếng Việt hoặc tên tiếng Anh tương ứng. Nếu thư mục chưa tồn tại, hệ thống sẽ tự tạo thư mục mới.</p>
+                                <p class="mt-1">Excel chỉ nhập dữ liệu và đường dẫn tài liệu. File PDF/DOC trực tiếp vẫn dùng chức năng tải file trong form thêm tài liệu như hiện tại.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="bulk-book-preview-wrap" class="hidden border border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Xem trước dữ liệu</p>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Kiểm tra nhanh trước khi ghi vào Cloud.</p>
+                            </div>
+                            <span id="bulk-book-preview-count" class="text-[11px] font-medium bg-slate-200/70 px-2 py-1 rounded-md text-slate-600">0 dòng</span>
+                        </div>
+                        <div class="overflow-x-auto max-h-56">
+                            <table class="w-full text-left text-[11px]">
+                                <thead class="bg-white sticky top-0 border-b border-slate-100">
+                                    <tr>
+                                        <th class="px-3 py-2 font-bold text-slate-500">#</th>
+                                        <th class="px-3 py-2 font-bold text-slate-500">Tên tài liệu</th>
+                                        <th class="px-3 py-2 font-bold text-slate-500">Tác giả</th>
+                                        <th class="px-3 py-2 font-bold text-slate-500">Thư mục</th>
+                                        <th class="px-3 py-2 font-bold text-slate-500">Link tài liệu</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bulk-book-preview-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="bulk-book-result" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs"></div>
+                </div>
+
+                <div class="p-4 border-t border-slate-100 bg-white flex items-center justify-between gap-3 shrink-0">
+                    <button type="button" onclick="closeBulkBookImportModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+                        Đóng
+                    </button>
+                    <button type="button" id="bulk-book-import-btn" onclick="importBulkBooksToCloud()" disabled class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold rounded-xl text-sm shadow-md shadow-emerald-100 transition">
+                        <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Nhập vào thư viện
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -615,6 +717,11 @@
 
         window.openUserMgmtModal = openUserMgmtModal;
         window.closeUserMgmtModal = closeUserMgmtModal;
+        window.openBulkBookImportModal = openBulkBookImportModal;
+        window.closeBulkBookImportModal = closeBulkBookImportModal;
+        window.downloadBookExcelTemplate = downloadBookExcelTemplate;
+        window.handleBulkBookExcelUpload = handleBulkBookExcelUpload;
+        window.importBulkBooksToCloud = importBulkBooksToCloud;
         window.resetUserForm = resetUserForm;
         window.handleSaveUser = handleSaveUser;
         window.editUser = editUser;
@@ -1216,6 +1323,252 @@
 
         function closeCategoryMgmtModal() {
             document.getElementById('category-mgmt-modal').classList.add('hidden');
+        }
+
+        // ==========================================
+        // NHẬP NHIỀU TÀI LIỆU TỪ EXCEL
+        // ==========================================
+        let bulkBookImportRows = [];
+
+        function openBulkBookImportModal() {
+            bulkBookImportRows = [];
+            document.getElementById('bulk-book-excel-input').value = '';
+            document.getElementById('bulk-book-excel-status').textContent = 'Chưa chọn file';
+            document.getElementById('bulk-book-preview-wrap').classList.add('hidden');
+            document.getElementById('bulk-book-result').classList.add('hidden');
+            document.getElementById('bulk-book-preview-body').innerHTML = '';
+            document.getElementById('bulk-book-preview-count').textContent = '0 dòng';
+            const btn = document.getElementById('bulk-book-import-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Nhập vào thư viện';
+            document.getElementById('bulk-book-import-modal').classList.remove('hidden');
+        }
+
+        function closeBulkBookImportModal() {
+            document.getElementById('bulk-book-import-modal').classList.add('hidden');
+        }
+
+        function downloadBookExcelTemplate() {
+            const templateData = [
+                {
+                    "Tên đầu sách": "Giáo trình Tin học cơ bản",
+                    "Tác giả": "Nguyễn Văn A",
+                    "Thư mục/Thể loại": "Công Nghệ",
+                    "Link Ảnh Bìa": "https://example.com/cover.jpg",
+                    "Link tài liệu": "https://drive.google.com/...",
+                    "Nội dung văn bản": "Giáo trình phục vụ học tập môn Tin học cơ bản."
+                },
+                {
+                    "Tên đầu sách": "Giáo trình Tiếng Anh chuyên ngành",
+                    "Tác giả": "Trần Thị B",
+                    "Thư mục/Thể loại": "Ngoại Ngữ",
+                    "Link Ảnh Bìa": "",
+                    "Link tài liệu": "https://example.com/tai-lieu.pdf",
+                    "Nội dung văn bản": "Tài liệu tham khảo cho học sinh hệ trung cấp."
+                }
+            ];
+            const ws = XLSX.utils.json_to_sheet(templateData);
+            ws['!cols'] = [
+                { wch: 32 }, { wch: 24 }, { wch: 22 }, { wch: 42 }, { wch: 48 }, { wch: 60 }
+            ];
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "DanhSachTaiLieu");
+            XLSX.writeFile(wb, "Mau_Nhap_Nhieu_Tai_Lieu.xlsx");
+        }
+
+        function getExcelValue(row, keys, defaultValue = '') {
+            for (const key of keys) {
+                if (row[key] !== undefined && row[key] !== null) {
+                    const value = row[key].toString().trim();
+                    if (value !== '') return value;
+                }
+            }
+            return defaultValue;
+        }
+
+        function normalizeBookImportRow(row) {
+            const title = getExcelValue(row, ['Tên đầu sách', 'Tên sách', 'Tên tài liệu', 'title', 'name']);
+            const author = getExcelValue(row, ['Tác giả', 'author']);
+            const category = getExcelValue(row, ['Thư mục/Thể loại', 'Thư mục', 'Thể loại', 'category', 'Category']);
+            const cover = getExcelValue(row, ['Link Ảnh Bìa', 'Ảnh bìa', 'Cover', 'cover', 'coverUrl', 'Cover URL']);
+            const fileLink = getExcelValue(row, ['Link tài liệu', 'Link tải tài liệu', 'File Link', 'fileLink', 'url', 'URL']);
+            const content = getExcelValue(row, ['Nội dung văn bản', 'Nội dung', 'Mô tả', 'content', 'description']);
+            return { title, author, category, cover, fileLink, content };
+        }
+
+        function handleBulkBookExcelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('bulk-book-excel-status');
+            statusEl.textContent = `Đang đọc: ${file.name}...`;
+            const importBtn = document.getElementById('bulk-book-import-btn');
+            importBtn.disabled = true;
+            bulkBookImportRows = [];
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+                    if (!rawRows.length) {
+                        statusEl.textContent = 'File không có dữ liệu.';
+                        showToast('File Excel trống hoặc không đúng định dạng!', 'error');
+                        return;
+                    }
+
+                    bulkBookImportRows = rawRows.map(normalizeBookImportRow);
+                    const invalidCount = bulkBookImportRows.filter(r => !r.title || !r.category).length;
+                    const validRows = bulkBookImportRows.filter(r => r.title && r.category);
+
+                    const previewBody = document.getElementById('bulk-book-preview-body');
+                    previewBody.innerHTML = '';
+                    validRows.slice(0, 30).forEach((book, index) => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-b border-slate-100 last:border-b-0';
+                        tr.innerHTML = `
+                            <td class="px-3 py-2 text-slate-400">${index + 1}</td>
+                            <td class="px-3 py-2 font-semibold text-slate-700">${escapeHtml(book.title)}</td>
+                            <td class="px-3 py-2 text-slate-500">${escapeHtml(book.author || 'Chưa rõ')}</td>
+                            <td class="px-3 py-2 text-slate-500">${escapeHtml(book.category)}</td>
+                            <td class="px-3 py-2 text-slate-500 max-w-[220px] truncate">${escapeHtml(book.fileLink || 'Không có')}</td>
+                        `;
+                        previewBody.appendChild(tr);
+                    });
+
+                    document.getElementById('bulk-book-preview-count').textContent = `${validRows.length} dòng hợp lệ${invalidCount ? ` / ${invalidCount} dòng thiếu thông tin bắt buộc` : ''}`;
+                    document.getElementById('bulk-book-preview-wrap').classList.remove('hidden');
+                    statusEl.textContent = `Đã đọc ${rawRows.length} dòng từ ${file.name}`;
+                    importBtn.disabled = validRows.length === 0;
+
+                    if (invalidCount > 0) {
+                        showToast(`Có ${invalidCount} dòng thiếu Tên đầu sách hoặc Thư mục/Thể loại và sẽ được bỏ qua.`, 'info');
+                    } else {
+                        showToast(`Đã đọc ${validRows.length} tài liệu, sẵn sàng nhập.`, 'success');
+                    }
+                } catch (err) {
+                    console.error('Lỗi đọc Excel tài liệu:', err);
+                    statusEl.textContent = 'Lỗi xử lý file.';
+                    showToast('Không thể đọc file Excel tài liệu!', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function makeBookImportKey(book) {
+            return [book.title, book.author, book.category]
+                .map(v => (v || '').toString().trim().toLowerCase())
+                .join('|');
+        }
+
+        async function ensureCategoryExists(categoryName) {
+            let category = state.categories.find(c => c.name.toLowerCase() === categoryName.toLowerCase());
+            if (category) return category;
+
+            const catId = 'cat-' + Date.now().toString() + '-' + Math.random().toString(36).substring(2, 7);
+            category = { id: catId, name: categoryName };
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', catId), category);
+            state.categories.push(category);
+            return category;
+        }
+
+        async function importBulkBooksToCloud() {
+            const btn = document.getElementById('bulk-book-import-btn');
+            const resultEl = document.getElementById('bulk-book-result');
+            const validRows = bulkBookImportRows.filter(r => r.title && r.category);
+
+            if (!validRows.length) {
+                showToast('Không có dữ liệu hợp lệ để nhập!', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            let successCount = 0;
+            let duplicateCount = 0;
+            let errorCount = 0;
+            const errors = [];
+
+            try {
+                const existingKeys = new Set(state.books.map(makeBookImportKey));
+                const incomingKeys = new Set();
+
+                for (let i = 0; i < validRows.length; i++) {
+                    const row = validRows[i];
+                    const key = makeBookImportKey(row);
+
+                    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang nhập ${i + 1}/${validRows.length}...`;
+
+                    if (existingKeys.has(key) || incomingKeys.has(key)) {
+                        duplicateCount++;
+                        continue;
+                    }
+
+                    try {
+                        await ensureCategoryExists(row.category);
+
+                        const targetId = 'book-' + Date.now().toString() + '-' + Math.random().toString(36).substring(2, 8);
+                        const bookData = {
+                            id: targetId,
+                            title: row.title,
+                            author: row.author || '',
+                            category: row.category,
+                            cover: row.cover || '',
+                            content: row.content || `Tài liệu: ${row.title}`,
+                            fileLink: row.fileLink || null,
+                            hasFile: false,
+                            fileName: null,
+                            fileSize: null,
+                            fileType: null
+                        };
+
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', targetId), bookData);
+                        incomingKeys.add(key);
+                        successCount++;
+                    } catch (rowError) {
+                        errorCount++;
+                        errors.push(`${row.title}: ${rowError.message || 'Lỗi không xác định'}`);
+                    }
+                }
+
+                resultEl.classList.remove('hidden');
+                resultEl.innerHTML = `
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-emerald-50 rounded-xl p-3"><div class="text-[10px] uppercase font-bold text-emerald-600">Thành công</div><div class="text-lg font-bold text-emerald-700 mt-1">${successCount}</div></div>
+                        <div class="bg-amber-50 rounded-xl p-3"><div class="text-[10px] uppercase font-bold text-amber-600">Trùng lặp</div><div class="text-lg font-bold text-amber-700 mt-1">${duplicateCount}</div></div>
+                        <div class="bg-rose-50 rounded-xl p-3"><div class="text-[10px] uppercase font-bold text-rose-600">Lỗi</div><div class="text-lg font-bold text-rose-700 mt-1">${errorCount}</div></div>
+                        <div class="bg-indigo-50 rounded-xl p-3"><div class="text-[10px] uppercase font-bold text-indigo-600">Tổng xử lý</div><div class="text-lg font-bold text-indigo-700 mt-1">${validRows.length}</div></div>
+                    </div>
+                    ${errors.length ? `<div class="mt-3 text-[10px] text-rose-600 leading-relaxed"><b>Chi tiết lỗi:</b><br>${errors.slice(0, 10).map(escapeHtml).join('<br>')}</div>` : ''}
+                `;
+
+                if (successCount > 0) {
+                    showToast(`Đã nhập thành công ${successCount} tài liệu${duplicateCount ? `, bỏ qua ${duplicateCount} tài liệu trùng` : ''}.`, 'success');
+                } else if (duplicateCount > 0 && errorCount === 0) {
+                    showToast(`Không có tài liệu mới. ${duplicateCount} tài liệu đã tồn tại hoặc bị trùng trong file.`, 'error');
+                } else {
+                    showToast('Không thể nhập dữ liệu tài liệu!', 'error');
+                }
+            } catch (err) {
+                console.error('Lỗi nhập hàng loạt tài liệu:', err);
+                showToast('Lỗi khi nhập hàng loạt tài liệu!', 'error');
+            } finally {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Đã xử lý file';
+                document.getElementById('bulk-book-excel-status').textContent = `Đã xử lý ${validRows.length} dòng hợp lệ.`;
+            }
         }
 
         // ==========================================
