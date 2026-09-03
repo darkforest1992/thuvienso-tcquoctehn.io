@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Lưu Trữ Thư Viện Số Cloud</title>
+    <title>Hệ Thống Thư Viện Số TC Quốc tế Hà Nội</title>
     <!-- Tailwind CSS cho Giao diện Hiện đại -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Inter -->
@@ -16,7 +16,6 @@
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Tối ưu hóa thanh cuộn */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -134,12 +133,10 @@
                                 <i class="fa-solid fa-gear"></i>
                             </button>
                         </div>
-                        <nav id="category-menu" class="space-y-1">
-                            <!-- JS tải danh mục động -->
-                        </nav>
+                        <nav id="category-menu" class="space-y-1"></nav>
                     </div>
 
-                    <!-- KHU VỰC LIÊN KẾT NGOÀI THEO YÊU CẦU -->
+                    <!-- 2 NÚT LIÊN KẾT NGOÀI TRÊN THANH MENU -->
                     <div class="pt-3 border-t border-slate-800">
                         <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-2">Liên kết ngoài</p>
                         <div class="space-y-1.5">
@@ -184,9 +181,8 @@
                 </div>
             </aside>
 
-            <!-- KHU VỰC HIỂN THỊ NỘI DUNG CHÍNH -->
+            <!-- NỘI DUNG CHÍNH -->
             <main class="flex-1 flex flex-col min-h-0 bg-slate-50">
-                <!-- Header Trên -->
                 <header class="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between gap-4 shrink-0">
                     <div class="relative w-full max-w-md">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
@@ -210,7 +206,6 @@
                     </div>
                 </header>
 
-                <!-- Content Area -->
                 <div class="flex-1 overflow-y-auto p-6">
                     <div class="max-w-6xl mx-auto space-y-6">
                         <div class="flex items-center justify-between">
@@ -226,7 +221,6 @@
                         <!-- LƯỚI SÁCH -->
                         <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
 
-                        <!-- Empty state -->
                         <div id="empty-state" class="hidden flex-col items-center justify-center text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
                             <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center text-2xl mb-4">
                                 <i class="fa-solid fa-folder-open"></i>
@@ -254,9 +248,10 @@
                     </button>
                 </div>
                 <div class="flex-1 overflow-y-auto p-8 md:p-12 bg-amber-50/20 text-slate-700 leading-relaxed font-serif text-lg selection:bg-amber-100">
+                    <!-- KHU VỰC TẢI / MỞ TÀI LIỆU ĐÍNH KÈM -->
                     <div id="reader-file-attachment" class="hidden mb-6 p-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-lg">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-lg" id="reader-attachment-icon">
                                 <i class="fa-solid fa-file-pdf"></i>
                             </div>
                             <div class="text-left">
@@ -264,20 +259,20 @@
                                 <p class="text-[10px] text-slate-500" id="attached-file-size">0 KB</p>
                             </div>
                         </div>
-                        <a id="attached-file-download" href="#" download="" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
-                            <i class="fa-solid fa-download"></i> Tải về tài liệu gốc
+                        <a id="attached-file-download" href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-download"></i> <span id="download-btn-label">Tải về tài liệu</span>
                         </a>
                     </div>
                     <div class="max-w-2xl mx-auto space-y-6" id="reader-content-body"></div>
                 </div>
                 <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 bg-white">
-                    <span>Hệ thống phân phối tài liệu nội bộ trường học</span>
-                    <span class="font-mono">Trang 1 / 1 (Mô phỏng bản đầy đủ)</span>
+                    <span>Hệ thống phân phối tài liệu trực tuyến</span>
+                    <span class="font-mono">Chế độ đọc trực tiếp</span>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL THÊM / CHỈNH SỬA SÁCH -->
+        <!-- MODAL THÊM / CHỈNH SỬA SÁCH (CÓ THÊM TÙY CHỌN LINK TẢI NGOÀI) -->
         <div id="book-form-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
@@ -317,26 +312,59 @@
                             placeholder="https://example.com/cover.jpg">
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Đính kèm tệp tài liệu (< 1MB)</label>
-                        <div id="dropzone" class="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl p-6 text-center cursor-pointer transition bg-slate-50 flex flex-col items-center justify-center gap-2">
-                            <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                            </div>
-                            <div class="text-xs">
-                                <span class="font-semibold text-indigo-600">Nhấp để tải lên</span> hoặc kéo thả tệp vào đây
-                            </div>
-                            <p class="text-[10px] text-slate-400">PDF, TXT, DOC, PNG, JPG (Tối đa 1MB)</p>
-                            <input type="file" id="book-file-input" class="hidden" accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg">
-                        </div>
-                        <div id="file-info-container" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
-                            <div class="flex items-center gap-2 overflow-hidden">
-                                <i class="fa-solid fa-file-shield text-emerald-500 text-sm"></i>
-                                <span id="file-name-display" class="text-xs font-medium text-slate-700 truncate max-w-[200px]">document.pdf</span>
-                            </div>
-                            <button type="button" onclick="clearUploadedFile()" class="text-rose-500 hover:text-rose-600 text-xs font-semibold transition">
-                                <i class="fa-solid fa-trash"></i> Gỡ tệp
+                    <!-- KHU VỰC TÍNH NĂNG TÀI LIỆU ĐÍNH KÈM (HỖ TRỢ FILE <=1MB VÀ LINK NGOÀI CHO FILE >1MB) -->
+                    <div class="p-4 bg-slate-100/70 border border-slate-200 rounded-2xl space-y-3">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Đính kèm tài liệu học tập</label>
+                        
+                        <!-- Lựa chọn hình thức -->
+                        <div class="flex gap-2">
+                            <button type="button" id="tab-btn-file" onclick="switchAttachmentTab('file')"
+                                class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-sm border border-slate-200 transition">
+                                <i class="fa-solid fa-file-arrow-up mr-1"></i> Tải file lên (≤ 1MB)
                             </button>
+                            <button type="button" id="tab-btn-link" onclick="switchAttachmentTab('link')"
+                                class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-200/70 text-slate-600 hover:text-indigo-600 transition">
+                                <i class="fa-solid fa-link mr-1"></i> Link tải ngoài (> 1MB)
+                            </button>
+                        </div>
+
+                        <!-- Phương thức 1: Tải file trực tiếp -->
+                        <div id="attachment-file-panel" class="space-y-2">
+                            <div id="dropzone" class="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-xl p-5 text-center cursor-pointer transition bg-white flex flex-col items-center justify-center gap-1.5">
+                                <div class="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-base">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <span class="font-semibold text-indigo-600">Nhấp để tải lên</span> hoặc kéo thả file vào đây
+                                </div>
+                                <p class="text-[10px] text-slate-400">PDF, TXT, DOC, DOCX, PNG, JPG (Tối đa 1MB)</p>
+                                <input type="file" id="book-file-input" class="hidden" accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg">
+                            </div>
+
+                            <div id="file-info-container" class="hidden p-2.5 bg-white border border-slate-200 rounded-xl flex items-center justify-between">
+                                <div class="flex items-center gap-2 overflow-hidden">
+                                    <i class="fa-solid fa-file-shield text-emerald-500 text-sm"></i>
+                                    <span id="file-name-display" class="text-xs font-medium text-slate-700 truncate max-w-[200px]">document.pdf</span>
+                                </div>
+                                <button type="button" onclick="clearUploadedFile()" class="text-rose-500 hover:text-rose-600 text-xs font-semibold transition">
+                                    <i class="fa-solid fa-trash"></i> Gỡ file
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Phương thức 2: Nhập Link tải ngoài dành cho file lớn -->
+                        <div id="attachment-link-panel" class="hidden space-y-2">
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-cloud"></i>
+                                </span>
+                                <input type="url" id="book-file-link-input"
+                                    class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition" 
+                                    placeholder="Link Google Drive, OneDrive, Dropbox, v.v.">
+                            </div>
+                            <p class="text-[10px] text-slate-500 italic">
+                                * Khuyên dùng cho các tệp PDF, bài giảng nặng trên 1MB. Hãy nhớ bật quyền "Bất kỳ ai có liên kết đều có thể xem/tải".
+                            </p>
                         </div>
                     </div>
 
@@ -344,7 +372,7 @@
                         <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Nội dung văn bản học tập *</label>
                         <textarea id="book-content-input" required rows="4"
                             class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none" 
-                            placeholder="Nhập nội dung giảng dạy, tóm tắt hoặc ghi chú..."></textarea>
+                            placeholder="Nhập tóm tắt, mục lục hoặc nội dung giảng dạy..."></textarea>
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3 shrink-0">
@@ -352,7 +380,7 @@
                             class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
                             Hủy bỏ
                         </button>
-                        <button type="submit"
+                        <button type="submit" id="save-book-btn"
                             class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-indigo-100 transition">
                             Lưu dữ liệu
                         </button>
@@ -391,10 +419,9 @@
             </div>
         </div>
 
-        <!-- MODAL QUẢN LÝ THÀNH VIÊN (CÓ THÊM TÍNH NĂNG NHẬP EXCEL) -->
+        <!-- MODAL QUẢN LÝ THÀNH VIÊN -->
         <div id="user-mgmt-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-                <!-- Header -->
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
                     <div>
                         <h3 class="font-bold text-slate-800 text-lg">Quản Lý Thành Viên Thư Viện</h3>
@@ -405,10 +432,8 @@
                     </button>
                 </div>
 
-                <!-- Body -->
                 <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    
-                    <!-- KHU VỰC THÊM HÀNG LOẠT BẰNG EXCEL -->
+                    <!-- NHẬP FILE EXCEL -->
                     <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-2xl">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                             <div class="flex items-center gap-2">
@@ -434,7 +459,7 @@
                         </div>
                     </div>
 
-                    <!-- Form thêm/sửa tài khoản đơn lẻ -->
+                    <!-- FORM THÊM ĐƠN LẺ -->
                     <form id="user-form" onsubmit="handleSaveUser(event)" class="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/60">
                         <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cấp tài khoản đơn lẻ / Chỉnh sửa</p>
                         <input type="hidden" id="edit-user-id">
@@ -477,7 +502,6 @@
                         </div>
                     </form>
 
-                    <!-- Danh sách người dùng hiện tại -->
                     <div class="pt-4 border-t border-slate-100">
                         <div class="flex items-center justify-between mb-3">
                             <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Danh sách tài khoản trên Cloud</p>
@@ -491,11 +515,11 @@
 
     </div>
 
-    <!-- Nhúng Firebase SDK trực tiếp -->
+    <!-- Nhúng Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'shared-library-id-2026';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
@@ -545,11 +569,13 @@
             users: [],
             activeCategory: "Toàn bộ",
             searchTerm: "",
-            uploadedFile: null
+            uploadedFile: null,
+            attachmentTab: 'file' // 'file' hoặc 'link'
         };
 
         const categoriesRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
         const booksRef = collection(db, 'artifacts', appId, 'public', 'data', 'books');
+        const bookFilesRef = collection(db, 'artifacts', appId, 'public', 'data', 'book_files');
         const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
 
         async function authenticateDatabase() {
@@ -580,13 +606,13 @@
         window.deleteBook = deleteBook;
         window.handleSaveBook = handleSaveBook;
         window.clearUploadedFile = clearUploadedFile;
+        window.switchAttachmentTab = switchAttachmentTab;
         window.openCategoryMgmtModal = openCategoryMgmtModal;
         window.closeCategoryMgmtModal = closeCategoryMgmtModal;
         window.handleSaveCategory = handleSaveCategory;
         window.deleteCategory = deleteCategory;
         window.handleSearch = handleSearch;
 
-        // Quản lý thành viên & Excel
         window.openUserMgmtModal = openUserMgmtModal;
         window.closeUserMgmtModal = closeUserMgmtModal;
         window.resetUserForm = resetUserForm;
@@ -664,6 +690,29 @@
             }
         }
 
+        // ==========================================
+        // QUẢN LÝ TỆP TIN & LIÊN KẾT ĐÍNH KÈM
+        // ==========================================
+        function switchAttachmentTab(type) {
+            state.attachmentTab = type;
+            const btnFile = document.getElementById('tab-btn-file');
+            const btnLink = document.getElementById('tab-btn-link');
+            const panelFile = document.getElementById('attachment-file-panel');
+            const panelLink = document.getElementById('attachment-link-panel');
+
+            if (type === 'file') {
+                btnFile.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-sm border border-slate-200 transition";
+                btnLink.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-200/70 text-slate-600 hover:text-indigo-600 transition";
+                panelFile.classList.remove('hidden');
+                panelLink.classList.add('hidden');
+            } else {
+                btnLink.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-sm border border-slate-200 transition";
+                btnFile.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-200/70 text-slate-600 hover:text-indigo-600 transition";
+                panelLink.classList.remove('hidden');
+                panelFile.classList.add('hidden');
+            }
+        }
+
         function setupFileUploader() {
             const dropzone = document.getElementById('dropzone');
             const fileInput = document.getElementById('book-file-input');
@@ -695,8 +744,12 @@
         }
 
         function processFile(file) {
-            if (file.size > 1024 * 1024) {
-                showToast("Dung lượng tệp vượt quá 1MB!", "error");
+            const MAX_ALLOWED_SIZE = 760 * 1024; // An toàn dưới 1MB của Firestore[cite: 1]
+
+            if (file.size > MAX_ALLOWED_SIZE) {
+                showToast(`Tệp vượt quá giới hạn tải trực tiếp (~${formatBytes(MAX_ALLOWED_SIZE)})! Vui lòng dùng tab 'Link tải ngoài (>1MB)'.`, "error");
+                document.getElementById('book-file-input').value = '';
+                switchAttachmentTab('link');
                 return;
             }
 
@@ -705,11 +758,12 @@
                 state.uploadedFile = {
                     name: file.name,
                     size: formatBytes(file.size),
-                    type: file.type,
-                    base64: e.target.result
+                    type: file.type || 'application/octet-stream',
+                    base64: e.target.result,
+                    hasChanged: true
                 };
                 
-                document.getElementById('file-name-display').textContent = file.name;
+                document.getElementById('file-name-display').textContent = `${file.name} (${state.uploadedFile.size})`;
                 document.getElementById('file-info-container').classList.remove('hidden');
                 
                 if (file.type === "text/plain") {
@@ -720,7 +774,7 @@
                     textReader.readAsText(file);
                 }
 
-                showToast("Đã tải tệp lên thành công!", "success");
+                showToast("Đã đính kèm tệp! Bấm 'Lưu dữ liệu'", "success");
             };
             reader.readAsDataURL(file);
         }
@@ -884,6 +938,22 @@
                 const fallbackCover = `https://placehold.co/300x400/6366f1/ffffff?text=${encodeURIComponent(book.title)}`;
                 const coverSrc = book.cover ? book.cover : fallbackCover;
 
+                // Xác định nhãn hiển thị tài liệu
+                let attachmentBadge = '';
+                if (book.fileLink) {
+                    attachmentBadge = `
+                        <div class="mt-2 text-[10px] text-sky-600 font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-cloud-arrow-down"></i> Link tài liệu ngoài
+                        </div>
+                    `;
+                } else if (book.hasFile) {
+                    attachmentBadge = `
+                        <div class="mt-2 text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-paperclip"></i> File đính kèm (${book.fileSize || ''})
+                        </div>
+                    `;
+                }
+
                 card.innerHTML = `
                     <div class="relative aspect-[3/4] bg-slate-100 overflow-hidden">
                         <img src="${coverSrc}" alt="${book.title}" 
@@ -905,11 +975,7 @@
                                 ${book.title}
                             </h4>
                             <p class="text-xs text-slate-400 mt-1 line-clamp-1">Tác giả: ${book.author || 'Ẩn danh'}</p>
-                            ${book.attachedFile ? `
-                                <div class="mt-2 text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
-                                    <i class="fa-solid fa-paperclip"></i> Có tệp đính kèm (${book.attachedFile.size})
-                                </div>
-                            ` : ''}
+                            ${attachmentBadge}
                         </div>
 
                         <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
@@ -937,7 +1003,10 @@
             });
         }
 
-        function readBook(id) {
+        // ==========================================
+        // XEM VÀ TẢI TÀI LIỆU
+        // ==========================================
+        async function readBook(id) {
             const book = state.books.find(b => b.id === id);
             if (!book) return;
 
@@ -945,13 +1014,48 @@
             document.getElementById('reader-book-category').textContent = book.category;
             
             const fileAttachmentBox = document.getElementById('reader-file-attachment');
-            if (book.attachedFile) {
-                document.getElementById('attached-file-name').textContent = book.attachedFile.name;
-                document.getElementById('attached-file-size').textContent = book.attachedFile.size;
-                const downloadBtn = document.getElementById('attached-file-download');
-                downloadBtn.href = book.attachedFile.base64;
-                downloadBtn.download = book.attachedFile.name;
+            const downloadBtn = document.getElementById('attached-file-download');
+            const downloadBtnLabel = document.getElementById('download-btn-label');
+            const iconBox = document.getElementById('reader-attachment-icon');
+
+            // Trường hợp 1: Có Link tải tài liệu ngoài (>1MB)
+            if (book.fileLink) {
+                document.getElementById('attached-file-name').textContent = "Tài liệu học tập liên kết ngoài";
+                document.getElementById('attached-file-size').textContent = "Google Drive / Cloud Link";
+                iconBox.className = "w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center text-sky-600 text-lg";
+                iconBox.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i>';
+
+                downloadBtn.href = book.fileLink;
+                downloadBtn.target = "_blank";
+                downloadBtn.removeAttribute('download');
+                downloadBtnLabel.textContent = "Mở link tải tài liệu";
                 fileAttachmentBox.classList.remove('hidden');
+            } 
+            // Trường hợp 2: Có tệp tin tải trực tiếp (≤ 1MB)
+            else if (book.hasFile) {
+                document.getElementById('attached-file-name').textContent = book.fileName || 'Tài liệu đính kèm';
+                document.getElementById('attached-file-size').textContent = book.fileSize || '';
+                iconBox.className = "w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-lg";
+                iconBox.innerHTML = '<i class="fa-solid fa-file-pdf"></i>';
+
+                downloadBtn.removeAttribute('target');
+                downloadBtn.removeAttribute('href');
+                downloadBtnLabel.textContent = "Đang nạp file...";
+                fileAttachmentBox.classList.remove('hidden');
+
+                try {
+                    const fileDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'book_files', id));
+                    if (fileDoc.exists() && fileDoc.data().base64) {
+                        downloadBtn.href = fileDoc.data().base64;
+                        downloadBtn.download = book.fileName || 'tai_lieu';
+                        downloadBtnLabel.textContent = "Tải về tài liệu gốc";
+                    } else {
+                        downloadBtnLabel.textContent = "Không thể nạp file";
+                    }
+                } catch (err) {
+                    console.error("Lỗi lấy tệp:", err);
+                    downloadBtnLabel.textContent = "Lỗi nạp file";
+                }
             } else {
                 fileAttachmentBox.classList.add('hidden');
             }
@@ -978,7 +1082,9 @@
             document.getElementById('modal-form-title').textContent = "Thêm Tài Liệu Thư Viện Mới";
             document.getElementById('book-form').reset();
             document.getElementById('edit-book-id').value = '';
+            document.getElementById('book-file-link-input').value = '';
             clearUploadedFile();
+            switchAttachmentTab('file');
             document.getElementById('book-form-modal').classList.remove('hidden');
         }
 
@@ -995,17 +1101,35 @@
             document.getElementById('book-content-input').value = book.content;
 
             clearUploadedFile();
-            if (book.attachedFile) {
-                state.uploadedFile = book.attachedFile;
-                document.getElementById('file-name-display').textContent = book.attachedFile.name;
+            document.getElementById('book-file-link-input').value = book.fileLink || '';
+
+            if (book.fileLink) {
+                switchAttachmentTab('link');
+            } else if (book.hasFile) {
+                switchAttachmentTab('file');
+                state.uploadedFile = {
+                    name: book.fileName,
+                    size: book.fileSize,
+                    type: book.fileType,
+                    hasChanged: false
+                };
+                document.getElementById('file-name-display').textContent = `${book.fileName} (${book.fileSize})`;
                 document.getElementById('file-info-container').classList.remove('hidden');
+            } else {
+                switchAttachmentTab('file');
             }
 
             document.getElementById('book-form-modal').classList.remove('hidden');
         }
 
+        // ==========================================
+        // LƯU SÁCH LÊN CLOUD
+        // ==========================================
         async function handleSaveBook(e) {
             e.preventDefault();
+            const saveBtn = document.getElementById('save-book-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang tải lên...';
             
             const editId = document.getElementById('edit-book-id').value;
             const title = document.getElementById('book-title-input').value.trim();
@@ -1013,6 +1137,7 @@
             const category = document.getElementById('book-category-input').value;
             const cover = document.getElementById('book-cover-input').value.trim();
             const content = document.getElementById('book-content-input').value.trim();
+            const fileLink = document.getElementById('book-file-link-input').value.trim();
 
             const targetId = editId ? editId : 'book-' + Date.now().toString();
 
@@ -1022,22 +1147,45 @@
                 author,
                 category,
                 cover,
-                content
+                content,
+                fileLink: fileLink || null,
+                hasFile: !fileLink && !!state.uploadedFile,
+                fileName: (!fileLink && state.uploadedFile) ? state.uploadedFile.name : null,
+                fileSize: (!fileLink && state.uploadedFile) ? state.uploadedFile.size : null,
+                fileType: (!fileLink && state.uploadedFile) ? state.uploadedFile.type : null
             };
 
-            if (state.uploadedFile) {
-                bookData.attachedFile = state.uploadedFile;
-            } else {
-                bookData.attachedFile = null;
-            }
-
             try {
+                // 1. Quản lý lưu file Base64 tách biệt vào collection book_files (nếu dùng phương thức file trực tiếp)
+                if (!fileLink && state.uploadedFile && state.uploadedFile.hasChanged) {
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'book_files', targetId), {
+                        id: targetId,
+                        fileName: state.uploadedFile.name,
+                        fileSize: state.uploadedFile.size,
+                        base64: state.uploadedFile.base64
+                    });
+                } else if (fileLink || !state.uploadedFile) {
+                    // Nếu đã đổi sang link ngoài hoặc gỡ file thì xóa document trong book_files
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'book_files', targetId)).catch(() => {});
+                }
+
+                // 2. Lưu document thông tin sách
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', targetId), bookData);
+                
                 showToast(editId ? 'Đã cập nhật thông tin sách!' : 'Thêm tài liệu thành công!', 'success');
                 closeBookFormModal();
             } catch (error) {
-                console.error("Error saving book:", error);
-                showToast("Không thể lưu dữ liệu lên Cloud!", "error");
+                console.error("Lỗi Firestore:", error);
+                if (error.code === 'permission-denied') {
+                    showToast("Lỗi: Firebase từ chối quyền ghi (Permission Denied).", "error");
+                } else if (error.message && error.message.includes("exceeds")) {
+                    showToast("Lỗi: File quá lớn! Vui lòng dùng tab 'Link tải ngoài (>1MB)'.", "error");
+                } else {
+                    showToast("Lỗi lưu Cloud: " + (error.message || "Không xác định"), "error");
+                }
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'Lưu dữ liệu';
             }
         }
 
@@ -1048,9 +1196,10 @@
             showConfirm(`Bạn chắc chắn muốn xóa tài liệu "${book.title}"?`, async () => {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', id));
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'book_files', id)).catch(() => {});
                     showToast('Đã gỡ bỏ tài liệu.', 'success');
                 } catch (error) {
-                    console.error("Error deleting book:", error);
+                    console.error("Lỗi xóa sách:", error);
                     showToast("Xóa tài liệu thất bại!", "error");
                 }
             });
@@ -1171,7 +1320,7 @@
                 showToast(editId ? "Đã cập nhật thông tin tài khoản!" : "Tạo tài khoản thành công!", "success");
                 resetUserForm();
             } catch (err) {
-                console.error("Error saving user:", err);
+                console.error("Lỗi lưu tài khoản:", err);
                 showToast("Lỗi khi lưu tài khoản lên Cloud!", "error");
             }
         }
@@ -1182,13 +1331,12 @@
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', id));
                     showToast("Đã xóa tài khoản thành công.", "success");
                 } catch (err) {
-                    console.error("Error deleting user:", err);
+                    console.error("Lỗi xóa tài khoản:", err);
                     showToast("Xóa tài khoản thất bại!", "error");
                 }
             });
         }
 
-        // TẢI FILE MẪU EXCEL TÀI KHOẢN
         function downloadExcelTemplate() {
             const templateData = [
                 {
@@ -1211,7 +1359,6 @@
             XLSX.writeFile(wb, "Mau_Them_Tai_Khoan.xlsx");
         }
 
-        // ĐỌC VÀ NHẬP TÀI KHOẢN TỪ FILE EXCEL
         function handleExcelUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -1239,7 +1386,6 @@
                     const existingUsernames = new Set(state.users.map(u => u.username.toLowerCase()));
 
                     for (let row of jsonData) {
-                        // Nhận diện linh hoạt các tên cột (có dấu hoặc không dấu)
                         const username = (row['Tên đăng nhập'] || row['username'] || row['Tài khoản'] || '').toString().trim().toLowerCase();
                         const name = (row['Họ và tên'] || row['name'] || row['Họ tên'] || '').toString().trim();
                         const password = (row['Mật khẩu'] || row['password'] || '123456').toString().trim();
@@ -1249,16 +1395,13 @@
                             role = 'student';
                         }
 
-                        if (!username || !name) {
-                            continue; // Bỏ qua nếu thiếu trường bắt buộc
-                        }
+                        if (!username || !name) continue;
 
                         if (existingUsernames.has(username)) {
                             duplicateCount++;
                             continue;
                         }
 
-                        // Tạo và lưu tài khoản vào Firestore
                         const newId = 'user-' + Date.now().toString() + '-' + Math.random().toString(36).substring(2, 7);
                         const newUser = {
                             id: newId,
@@ -1273,7 +1416,7 @@
                         successCount++;
                     }
 
-                    e.target.value = ''; // Reset input file
+                    e.target.value = '';
                     statusEl.textContent = `Đã nhập xong: ${successCount} tài khoản.`;
                     
                     if (successCount > 0) {
@@ -1283,7 +1426,7 @@
                     }
 
                 } catch (err) {
-                    console.error("Excel processing error:", err);
+                    console.error("Lỗi xử lý file Excel:", err);
                     showToast("Lỗi khi xử lý file Excel!", "error");
                     statusEl.textContent = "Lỗi xử lý file.";
                 }
@@ -1291,7 +1434,9 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // Quản lý chuyên mục
+        // ==========================================
+        // QUẢN LÝ DANH MỤC & TIỆN ÍCH
+        // ==========================================
         async function handleSaveCategory(e) {
             e.preventDefault();
             const input = document.getElementById('category-name-input');
@@ -1311,7 +1456,7 @@
                 showToast("Thêm mới thư mục thành công!", "success");
                 input.value = '';
             } catch (error) {
-                console.error("Error adding category:", error);
+                console.error("Lỗi thêm danh mục:", error);
                 showToast("Không thể thêm thư mục!", "error");
             }
         }
@@ -1331,7 +1476,7 @@
                         selectCategory("Toàn bộ");
                     }
                 } catch (error) {
-                    console.error("Error deleting category:", error);
+                    console.error("Lỗi xóa danh mục:", error);
                     showToast("Xóa danh mục thất bại!", "error");
                 }
             });
@@ -1414,3 +1559,5 @@
     </script>
 </body>
 </html>
+
+```
