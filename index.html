@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Lưu Trữ Thư Viện Số Cloud</title>
+    <title>Hệ Thống Thư Viện Số TC Quốc tế Hà Nội</title>
     <!-- Tailwind CSS cho Giao diện Hiện đại -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts Inter -->
@@ -67,55 +67,42 @@
         <!-- MÀN HÌNH ĐĂNG NHẬP -->
         <div id="login-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-indigo-900 via-slate-900 to-emerald-950">
             <div class="bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl w-full max-w-md border border-white/20">
-                <div class="text-center mb-6">
+                <div class="text-center mb-8">
                     <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
                         <i class="fa-solid fa-book-open text-white text-3xl"></i>
                     </div>
                     <h1 class="text-2xl font-bold text-slate-800">Thư Viện Số Trực Tuyến</h1>
-                    <p class="text-xs text-slate-500 mt-1">Đăng nhập để truy cập tài liệu và hệ thống quản trị</p>
+                    <p class="text-sm text-slate-500 mt-1">Đăng nhập để truy cập tài liệu học tập</p>
                 </div>
 
-                <!-- Nút chọn nhanh tài khoản mẫu -->
-                <div class="mb-5 p-3 bg-slate-100/80 rounded-2xl border border-slate-200/80 flex items-center justify-between gap-2">
-                    <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider pl-1">Điền mẫu:</span>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="fillCreds('admin', 'admin123')" class="px-2.5 py-1 bg-white hover:bg-indigo-50 border border-slate-200 text-indigo-700 rounded-lg text-xs font-bold transition shadow-sm">
-                            <i class="fa-solid fa-user-shield mr-1"></i> Admin
-                        </button>
-                        <button type="button" onclick="fillCreds('student', 'student123')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 border border-slate-200 text-emerald-700 rounded-lg text-xs font-bold transition shadow-sm">
-                            <i class="fa-solid fa-user-graduate mr-1"></i> Học Sinh
-                        </button>
-                    </div>
-                </div>
-
-                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Tên đăng nhập</label>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Tên đăng nhập</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                                 <i class="fa-solid fa-user"></i>
                             </span>
                             <input type="text" id="username" required 
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition" 
-                                placeholder="Nhập admin hoặc tên tài khoản">
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" 
+                                placeholder="Tài khoản được cấp">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Mật khẩu</label>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Mật khẩu</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                                 <i class="fa-solid fa-lock"></i>
                             </span>
                             <input type="password" id="password" required 
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition" 
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" 
                                 placeholder="••••••••">
                         </div>
                     </div>
 
-                    <button type="submit" id="login-submit-btn"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-indigo-100 transition duration-150 transform active:scale-95 text-sm">
-                        Xác nhận đăng nhập <i class="fa-solid fa-arrow-right ml-1.5"></i>
+                    <button type="submit" 
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-100 transition duration-150 transform active:scale-95">
+                        Xác nhận đăng nhập <i class="fa-solid fa-arrow-right ml-2"></i>
                     </button>
                 </form>
             </div>
@@ -126,6 +113,7 @@
             
             <!-- THANH MENU TRÁI (SIDEBAR) -->
             <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
+                <!-- Brand Header -->
                 <div class="p-6 border-b border-slate-800 flex items-center gap-3">
                     <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-900/30">
                         <i class="fa-solid fa-book-open text-white text-xl"></i>
@@ -207,16 +195,12 @@
 
                     <!-- Nút quản trị (Chỉ Admin) -->
                     <div id="admin-actions" class="hidden flex items-center gap-2">
-                        <button onclick="openExcelBooksModal()"
-                            class="bg-teal-600 hover:bg-teal-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-md shadow-teal-100 transition duration-150 transform active:scale-95">
-                            <i class="fa-solid fa-file-excel"></i> Nhập sách từ Excel
-                        </button>
                         <button onclick="openUserMgmtModal()"
-                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-md shadow-emerald-100 transition duration-150 transform active:scale-95">
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-emerald-100 transition duration-150 transform active:scale-95">
                             <i class="fa-solid fa-users-gear"></i> Quản lý thành viên
                         </button>
                         <button onclick="openAddBookModal()"
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-md shadow-indigo-100 transition duration-150 transform active:scale-95">
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md shadow-indigo-100 transition duration-150 transform active:scale-95">
                             <i class="fa-solid fa-plus"></i> Thêm tài liệu mới
                         </button>
                     </div>
@@ -249,60 +233,6 @@
             </main>
         </div>
 
-        <!-- MODAL NHẬP TÀI LIỆU BẰNG EXCEL -->
-        <div id="excel-books-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-                <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
-                            <i class="fa-solid fa-file-excel"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-base">Nhập Tài Liệu Sách Từ Excel</h3>
-                            <p class="text-[11px] text-slate-500">Tự động thêm nhiều sách và thể loại vào thư viện Cloud</p>
-                        </div>
-                    </div>
-                    <button onclick="closeExcelBooksModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
-                        <i class="fa-solid fa-xmark text-lg"></i>
-                    </button>
-                </div>
-
-                <div class="p-6 space-y-5">
-                    <div class="flex items-center justify-between p-3.5 bg-teal-50/60 border border-teal-100 rounded-2xl">
-                        <div>
-                            <p class="text-xs font-bold text-teal-900">1. Tải file mẫu chuẩn Excel</p>
-                            <p class="text-[10px] text-teal-700 mt-0.5">Đã có sẵn các cột: Tên sách, Tác giả, Thể loại, Link ảnh bìa, Link tài liệu ngoài, Nội dung tóm tắt</p>
-                        </div>
-                        <button type="button" onclick="downloadBooksExcelTemplate()" 
-                            class="px-3 py-1.5 bg-white border border-teal-200 hover:border-teal-400 text-teal-700 rounded-xl text-xs font-semibold shadow-sm transition">
-                            <i class="fa-solid fa-download mr-1"></i> Tải file mẫu
-                        </button>
-                    </div>
-
-                    <div class="space-y-3">
-                        <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Chọn file Excel cần tải lên</p>
-                        <div id="books-excel-dropzone" onclick="document.getElementById('books-excel-file-input').click()"
-                            class="border-2 border-dashed border-slate-200 hover:border-teal-500 rounded-2xl p-6 text-center cursor-pointer transition bg-slate-50 flex flex-col items-center justify-center gap-2">
-                            <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center text-lg">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                            </div>
-                            <div class="text-xs text-slate-600">
-                                <span class="font-semibold text-teal-700">Nhấp vào đây</span> để chọn file (.xlsx, .xls)
-                            </div>
-                            <p class="text-[10px] text-slate-400" id="books-excel-status-text">Hỗ trợ hàng chục đến hàng trăm cuốn sách cùng lúc</p>
-                            <input type="file" id="books-excel-file-input" accept=".xlsx, .xls" class="hidden" onchange="handleBooksExcelUpload(event)">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end">
-                    <button type="button" onclick="closeExcelBooksModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl transition">
-                        Đóng
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <!-- MODAL ĐỌC SÁCH -->
         <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
@@ -318,6 +248,7 @@
                     </button>
                 </div>
                 <div class="flex-1 overflow-y-auto p-8 md:p-12 bg-amber-50/20 text-slate-700 leading-relaxed font-serif text-lg selection:bg-amber-100">
+                    <!-- KHU VỰC TẢI / MỞ TÀI LIỆU ĐÍNH KÈM -->
                     <div id="reader-file-attachment" class="hidden mb-6 p-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-lg" id="reader-attachment-icon">
@@ -341,7 +272,7 @@
             </div>
         </div>
 
-        <!-- MODAL THÊM / CHỈNH SỬA SÁCH -->
+        <!-- MODAL THÊM / CHỈNH SỬA SÁCH (CÓ THÊM TÙY CHỌN LINK TẢI NGOÀI) -->
         <div id="book-form-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
@@ -381,10 +312,11 @@
                             placeholder="https://example.com/cover.jpg">
                     </div>
 
-                    <!-- TÙY CHỌN FILE HOẶC LINK NGOÀI -->
+                    <!-- KHU VỰC TÍNH NĂNG TÀI LIỆU ĐÍNH KÈM (HỖ TRỢ FILE <=1MB VÀ LINK NGOÀI CHO FILE >1MB) -->
                     <div class="p-4 bg-slate-100/70 border border-slate-200 rounded-2xl space-y-3">
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Đính kèm tài liệu học tập</label>
                         
+                        <!-- Lựa chọn hình thức -->
                         <div class="flex gap-2">
                             <button type="button" id="tab-btn-file" onclick="switchAttachmentTab('file')"
                                 class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-sm border border-slate-200 transition">
@@ -396,6 +328,7 @@
                             </button>
                         </div>
 
+                        <!-- Phương thức 1: Tải file trực tiếp -->
                         <div id="attachment-file-panel" class="space-y-2">
                             <div id="dropzone" class="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-xl p-5 text-center cursor-pointer transition bg-white flex flex-col items-center justify-center gap-1.5">
                                 <div class="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-base">
@@ -419,6 +352,7 @@
                             </div>
                         </div>
 
+                        <!-- Phương thức 2: Nhập Link tải ngoài dành cho file lớn -->
                         <div id="attachment-link-panel" class="hidden space-y-2">
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
@@ -429,7 +363,7 @@
                                     placeholder="Link Google Drive, OneDrive, Dropbox, v.v.">
                             </div>
                             <p class="text-[10px] text-slate-500 italic">
-                                * Khuyên dùng cho các tệp PDF, tài liệu nặng trên 1MB. Hãy nhớ bật quyền chia sẻ công khai ("Bất kỳ ai có liên kết đều xem/tải được").
+                                * Khuyên dùng cho các tệp PDF, bài giảng nặng trên 1MB. Hãy nhớ bật quyền "Bất kỳ ai có liên kết đều có thể xem/tải".
                             </p>
                         </div>
                     </div>
@@ -499,7 +433,7 @@
                 </div>
 
                 <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    <!-- NHẬP TÀI KHOẢN TỪ EXCEL -->
+                    <!-- NHẬP FILE EXCEL -->
                     <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-2xl">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                             <div class="flex items-center gap-2">
@@ -601,12 +535,6 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // DANH SÁCH TÀI KHOẢN MẶC ĐỊNH LUÔN KHỞI TẠO ĐỂ ĐẢM BẢO KHÔNG BỊ KHÓA ADMIN
-        const DEFAULT_USERS = [
-            { id: "user-admin", username: "admin", password: "admin123", name: "Thầy Quản Trị", role: "admin" },
-            { id: "user-student", username: "student", password: "student123", name: "Học Sinh Nguyễn Văn B", role: "student" }
-        ];
-
         const DEFAULT_CATEGORIES = [
             { id: "cat-1", name: "Toán Học" },
             { id: "cat-2", name: "Ngữ Văn" },
@@ -638,11 +566,11 @@
             user: null, 
             categories: [],
             books: [],
-            users: [...DEFAULT_USERS], // Khởi tạo sẵn tài khoản admin mặc định trong RAM tránh lỗi Race condition
+            users: [],
             activeCategory: "Toàn bộ",
             searchTerm: "",
             uploadedFile: null,
-            attachmentTab: 'file'
+            attachmentTab: 'file' // 'file' hoặc 'link'
         };
 
         const categoriesRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
@@ -685,7 +613,6 @@
         window.deleteCategory = deleteCategory;
         window.handleSearch = handleSearch;
 
-        // Quản lý thành viên & Excel user
         window.openUserMgmtModal = openUserMgmtModal;
         window.closeUserMgmtModal = closeUserMgmtModal;
         window.resetUserForm = resetUserForm;
@@ -694,12 +621,6 @@
         window.deleteUser = deleteUser;
         window.downloadExcelTemplate = downloadExcelTemplate;
         window.handleExcelUpload = handleExcelUpload;
-
-        // Quản lý nhập Sách Excel
-        window.openExcelBooksModal = openExcelBooksModal;
-        window.closeExcelBooksModal = closeExcelBooksModal;
-        window.downloadBooksExcelTemplate = downloadBooksExcelTemplate;
-        window.handleBooksExcelUpload = handleBooksExcelUpload;
 
         window.addEventListener('load', () => {
             authenticateDatabase();
@@ -739,16 +660,9 @@
                 snapshot.forEach(doc => {
                     fetchedUsers.push({ id: doc.id, ...doc.data() });
                 });
-
-                // Luôn đảm bảo tài khoản admin tồn tại trong state
-                const hasAdmin = fetchedUsers.some(u => u.username.toLowerCase() === 'admin');
-                if (!hasAdmin) {
-                    fetchedUsers.unshift(DEFAULT_USERS[0]);
-                }
-
                 state.users = fetchedUsers;
 
-                if (snapshot.empty) {
+                if (state.users.length === 0) {
                     seedDefaultUsers();
                     return;
                 }
@@ -767,11 +681,18 @@
         }
 
         async function seedDefaultUsers() {
-            for (let u of DEFAULT_USERS) {
+            const defaultUsers = [
+                { id: "user-admin", username: "admin", password: "admin123", name: "Thầy Quản Trị", role: "admin" },
+                { id: "user-student", username: "student", password: "student123", name: "Học Sinh Nguyễn Văn B", role: "student" }
+            ];
+            for (let u of defaultUsers) {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', u.id), u);
             }
         }
 
+        // ==========================================
+        // QUẢN LÝ TỆP TIN & LIÊN KẾT ĐÍNH KÈM
+        // ==========================================
         function switchAttachmentTab(type) {
             state.attachmentTab = type;
             const btnFile = document.getElementById('tab-btn-file');
@@ -823,7 +744,7 @@
         }
 
         function processFile(file) {
-            const MAX_ALLOWED_SIZE = 760 * 1024;
+            const MAX_ALLOWED_SIZE = 760 * 1024; // An toàn dưới 1MB của Firestore[cite: 1]
 
             if (file.size > MAX_ALLOWED_SIZE) {
                 showToast(`Tệp vượt quá giới hạn tải trực tiếp (~${formatBytes(MAX_ALLOWED_SIZE)})! Vui lòng dùng tab 'Link tải ngoài (>1MB)'.`, "error");
@@ -869,18 +790,12 @@
             document.getElementById('password').value = password;
         }
 
-        // HÀM ĐĂNG NHẬP ĐÃ TỐI ƯU VỚI CƠ CHẾ DỰ PHÒNG CHẮC CHẮN CHO ADMIN
         function handleLogin(e) {
             e.preventDefault();
             const usernameInput = document.getElementById('username').value.trim().toLowerCase();
-            const passwordInput = document.getElementById('password').value.trim();
+            const passwordInput = document.getElementById('password').value;
 
-            let matchedUser = state.users.find(u => u.username.toLowerCase() === usernameInput);
-
-            // Cơ chế dự phòng (Fallback): Luôn cho phép đăng nhập nếu đúng thông tin gốc của Admin hoặc Student
-            if (!matchedUser) {
-                matchedUser = DEFAULT_USERS.find(u => u.username.toLowerCase() === usernameInput);
-            }
+            const matchedUser = state.users.find(u => u.username.toLowerCase() === usernameInput);
 
             if (matchedUser && matchedUser.password === passwordInput) {
                 state.user = {
@@ -910,7 +825,7 @@
 
                 renderBooks();
             } else {
-                showToast('Tài khoản hoặc mật khẩu không chính xác! Thử bấm chọn nút Admin mẫu ở trên.', 'error');
+                showToast('Tài khoản hoặc mật khẩu không chính xác!', 'error');
             }
         }
 
@@ -1023,11 +938,12 @@
                 const fallbackCover = `https://placehold.co/300x400/6366f1/ffffff?text=${encodeURIComponent(book.title)}`;
                 const coverSrc = book.cover ? book.cover : fallbackCover;
 
+                // Xác định nhãn hiển thị tài liệu
                 let attachmentBadge = '';
                 if (book.fileLink) {
                     attachmentBadge = `
                         <div class="mt-2 text-[10px] text-sky-600 font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-cloud-arrow-down"></i> Link tải ngoài
+                            <i class="fa-solid fa-cloud-arrow-down"></i> Link tài liệu ngoài
                         </div>
                     `;
                 } else if (book.hasFile) {
@@ -1102,6 +1018,7 @@
             const downloadBtnLabel = document.getElementById('download-btn-label');
             const iconBox = document.getElementById('reader-attachment-icon');
 
+            // Trường hợp 1: Có Link tải tài liệu ngoài (>1MB)
             if (book.fileLink) {
                 document.getElementById('attached-file-name').textContent = "Tài liệu học tập liên kết ngoài";
                 document.getElementById('attached-file-size').textContent = "Google Drive / Cloud Link";
@@ -1113,7 +1030,9 @@
                 downloadBtn.removeAttribute('download');
                 downloadBtnLabel.textContent = "Mở link tải tài liệu";
                 fileAttachmentBox.classList.remove('hidden');
-            } else if (book.hasFile) {
+            } 
+            // Trường hợp 2: Có tệp tin tải trực tiếp (≤ 1MB)
+            else if (book.hasFile) {
                 document.getElementById('attached-file-name').textContent = book.fileName || 'Tài liệu đính kèm';
                 document.getElementById('attached-file-size').textContent = book.fileSize || '';
                 iconBox.className = "w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-lg";
@@ -1237,6 +1156,7 @@
             };
 
             try {
+                // 1. Quản lý lưu file Base64 tách biệt vào collection book_files (nếu dùng phương thức file trực tiếp)
                 if (!fileLink && state.uploadedFile && state.uploadedFile.hasChanged) {
                     await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'book_files', targetId), {
                         id: targetId,
@@ -1245,9 +1165,11 @@
                         base64: state.uploadedFile.base64
                     });
                 } else if (fileLink || !state.uploadedFile) {
+                    // Nếu đã đổi sang link ngoài hoặc gỡ file thì xóa document trong book_files
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'book_files', targetId)).catch(() => {});
                 }
 
+                // 2. Lưu document thông tin sách
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', targetId), bookData);
                 
                 showToast(editId ? 'Đã cập nhật thông tin sách!' : 'Thêm tài liệu thành công!', 'success');
@@ -1287,124 +1209,17 @@
             document.getElementById('book-form-modal').classList.add('hidden');
         }
 
-        // ==========================================
-        // NHẬP NHIỀU SÁCH BẰNG EXCEL
-        // ==========================================
-        function openExcelBooksModal() {
-            document.getElementById('books-excel-file-input').value = '';
-            document.getElementById('books-excel-status-text').textContent = 'Hỗ trợ hàng chục đến hàng trăm cuốn sách cùng lúc';
-            document.getElementById('excel-books-modal').classList.remove('hidden');
+        function openCategoryMgmtModal() {
+            renderCategoryMgmtList();
+            document.getElementById('category-mgmt-modal').classList.remove('hidden');
         }
 
-        function closeExcelBooksModal() {
-            document.getElementById('excel-books-modal').classList.add('hidden');
-        }
-
-        function downloadBooksExcelTemplate() {
-            const templateData = [
-                {
-                    "Tên sách": "Lịch Sử Đảng Cộng Sản Việt Nam",
-                    "Tác giả": "Hội đồng Trung ương",
-                    "Thể loại": "Khoa Học",
-                    "Link ảnh bìa": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=350&auto=format&fit=crop",
-                    "Link tài liệu ngoài": "https://drive.google.com/file/d/sample-file-1/view",
-                    "Nội dung tóm tắt": "Giáo trình tóm tắt các chặng đường lịch sử vẻ vang và bài học kinh nghiệm qua các thời kỳ xây dựng và phát triển đất nước."
-                },
-                {
-                    "Tên sách": "Lập Trình Web Fullstack 2026",
-                    "Tác giả": "Nguyễn Văn Hùng",
-                    "Thể loại": "Công Nghệ",
-                    "Link ảnh bìa": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=350&auto=format&fit=crop",
-                    "Link tài liệu ngoài": "https://drive.google.com/file/d/sample-file-2/view",
-                    "Nội dung tóm tắt": "Cẩm nang hướng dẫn xây dựng ứng dụng Web hiện đại tích hợp AI, tối ưu hóa cơ sở dữ liệu và bảo mật."
-                }
-            ];
-
-            const ws = XLSX.utils.json_to_sheet(templateData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "DanhSachSach");
-            XLSX.writeFile(wb, "Mau_Nhap_Danh_Sach_Sach.xlsx");
-        }
-
-        function handleBooksExcelUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const statusEl = document.getElementById('books-excel-status-text');
-            statusEl.textContent = `Đang xử lý: ${file.name}...`;
-
-            const reader = new FileReader();
-            reader.onload = async function(evt) {
-                try {
-                    const data = new Uint8Array(evt.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-                    if (!jsonData || jsonData.length === 0) {
-                        showToast("File Excel không có dữ liệu hợp lệ!", "error");
-                        statusEl.textContent = "File không chứa dữ liệu.";
-                        return;
-                    }
-
-                    let count = 0;
-                    const existingCats = new Set(state.categories.map(c => c.name.toLowerCase()));
-
-                    for (let row of jsonData) {
-                        const title = (row['Tên sách'] || row['title'] || row['Tên tài liệu'] || '').toString().trim();
-                        const author = (row['Tác giả'] || row['author'] || 'Chưa rõ').toString().trim();
-                        let category = (row['Thể loại'] || row['category'] || row['Thư mục'] || 'Chung').toString().trim();
-                        const cover = (row['Link ảnh bìa'] || row['cover'] || row['Ảnh'] || '').toString().trim();
-                        const fileLink = (row['Link tài liệu ngoài'] || row['fileLink'] || row['Link tải'] || row['Link Drive'] || '').toString().trim();
-                        const content = (row['Nội dung tóm tắt'] || row['content'] || row['Nội dung'] || 'Tài liệu học tập').toString().trim();
-
-                        if (!title) continue;
-
-                        if (!existingCats.has(category.toLowerCase())) {
-                            const newCatId = 'cat-' + Date.now().toString() + '-' + Math.random().toString(36).substring(2, 5);
-                            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', newCatId), {
-                                id: newCatId,
-                                name: category
-                            });
-                            existingCats.add(category.toLowerCase());
-                        }
-
-                        const newBookId = 'book-' + Date.now().toString() + '-' + Math.random().toString(36).substring(2, 7);
-                        const bookData = {
-                            id: newBookId,
-                            title,
-                            author,
-                            category,
-                            cover: cover || null,
-                            content,
-                            fileLink: fileLink || null,
-                            hasFile: false,
-                            fileName: null,
-                            fileSize: null,
-                            fileType: null
-                        };
-
-                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'books', newBookId), bookData);
-                        count++;
-                    }
-
-                    e.target.value = '';
-                    statusEl.textContent = `Đã nhập thành công ${count} tài liệu sách.`;
-                    showToast(`Đã thêm thành công ${count} tài liệu sách vào thư viện!`, "success");
-                    setTimeout(() => closeExcelBooksModal(), 1200);
-
-                } catch (err) {
-                    console.error("Lỗi nhập sách từ Excel:", err);
-                    showToast("Lỗi cấu trúc file Excel!", "error");
-                    statusEl.textContent = "Không thể đọc dữ liệu file.";
-                }
-            };
-            reader.readAsArrayBuffer(file);
+        function closeCategoryMgmtModal() {
+            document.getElementById('category-mgmt-modal').classList.add('hidden');
         }
 
         // ==========================================
-        // QUẢN LÝ THÀNH VIÊN VÀ NHẬP EXCEL USER
+        // QUẢN LÝ THÀNH VIÊN VÀ NHẬP EXCEL
         // ==========================================
         function openUserMgmtModal() {
             resetUserForm();
@@ -1576,7 +1391,10 @@
                         const password = (row['Mật khẩu'] || row['password'] || '123456').toString().trim();
                         let role = (row['Quyền truy cập'] || row['role'] || 'student').toString().trim().toLowerCase();
 
-                        if (role !== 'admin' && role !== 'student') role = 'student';
+                        if (role !== 'admin' && role !== 'student') {
+                            role = 'student';
+                        }
+
                         if (!username || !name) continue;
 
                         if (existingUsernames.has(username)) {
@@ -1585,7 +1403,13 @@
                         }
 
                         const newId = 'user-' + Date.now().toString() + '-' + Math.random().toString(36).substring(2, 7);
-                        const newUser = { id: newId, name, role, username, password };
+                        const newUser = {
+                            id: newId,
+                            name,
+                            role,
+                            username,
+                            password
+                        };
 
                         await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', newId), newUser);
                         existingUsernames.add(username);
@@ -1735,3 +1559,5 @@
     </script>
 </body>
 </html>
+
+```
